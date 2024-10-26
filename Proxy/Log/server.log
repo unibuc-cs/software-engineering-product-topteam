@@ -1,0 +1,175 @@
+38:14:17|26/10/2024: SSL context initialized successfully
+38:14:17|26/10/2024: Server is listening on port 8443
+38:14:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+41:14:17|26/10/2024: Error: SSL handshake failed
+04:15:17|26/10/2024: SSL context initialized successfully
+04:15:17|26/10/2024: Error: Bind failed
+06:20:17|26/10/2024: SSL context initialized successfully
+06:20:17|26/10/2024: Server startup
+06:20:17|26/10/2024: Server is listening on port 8443
+06:20:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+34:20:17|26/10/2024: Error: SSL handshake failed
+09:25:17|26/10/2024: SSL context initialized successfully
+09:25:17|26/10/2024: Server startup
+09:25:17|26/10/2024: Server is listening on port 8443
+09:25:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+14:25:17|26/10/2024: Error: SSL handshake failed
+47:26:17|26/10/2024: SSL context initialized successfully
+47:26:17|26/10/2024: Server startup
+47:26:17|26/10/2024: Server is listening on port 8443
+47:26:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+32:27:17|26/10/2024: SSL context initialized successfully
+32:27:17|26/10/2024: Server startup
+32:27:17|26/10/2024: Server is listening on port 8443
+32:27:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+37:27:17|26/10/2024: Error: SSL handshake failed
+48:27:17|26/10/2024: Error: SSL handshake failed
+51:27:17|26/10/2024: Error: SSL handshake failed
+55:27:17|26/10/2024: Error: SSL handshake failed
+02:28:17|26/10/2024: Error: SSL handshake failed
+56:28:17|26/10/2024: SSL context initialized successfully
+56:28:17|26/10/2024: Server startup
+56:28:17|26/10/2024: Error: Bind failed
+31:41:17|26/10/2024: SSL context initialized successfully
+31:41:17|26/10/2024: Server startup
+31:41:17|26/10/2024: Server is listening on port 8443
+31:41:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+41:41:17|26/10/2024: Error: SSL handshake failed
+06:42:17|26/10/2024: SSL context initialized successfully
+06:42:17|26/10/2024: Server startup
+06:42:17|26/10/2024: Server is listening on port 8443
+06:42:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+31:48:17|26/10/2024: SSL context initialized successfully
+31:48:17|26/10/2024: Server startup
+31:48:17|26/10/2024: Server is listening on port 8443
+31:48:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+49:48:17|26/10/2024: Error: SSL handshake failed
+54:48:17|26/10/2024: Error: SSL handshake failed
+19:52:17|26/10/2024: SSL context initialized successfully
+19:52:17|26/10/2024: Server startup
+19:52:17|26/10/2024: Server is listening on port 8443
+19:52:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+24:52:17|26/10/2024: Error: SSL handshake failed
+26:53:17|26/10/2024: SSL context initialized successfully
+26:53:17|26/10/2024: Server startup
+26:53:17|26/10/2024: Server is listening on port 8443
+26:53:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+28:53:17|26/10/2024: Error: SSL handshake failed
+02:54:17|26/10/2024: SSL context initialized successfully
+02:54:17|26/10/2024: Server startup
+02:54:17|26/10/2024: Error: Bind failed
+12:54:17|26/10/2024: SSL context initialized successfully
+12:54:17|26/10/2024: Server startup
+12:54:17|26/10/2024: Error: Bind failed
+39:54:17|26/10/2024: SSL context initialized successfully
+39:54:17|26/10/2024: Server startup
+39:54:17|26/10/2024: Server is listening on port 8443
+39:54:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+42:54:17|26/10/2024: Error: SSL handshake failed
+14:55:17|26/10/2024: SSL context initialized successfully
+14:55:17|26/10/2024: Server startup
+14:55:17|26/10/2024: Error: Bind failed
+22:55:17|26/10/2024: SSL context initialized successfully
+22:55:17|26/10/2024: Server startup
+22:55:17|26/10/2024: Error: Bind failed
+26:55:17|26/10/2024: SSL context initialized successfully
+26:55:17|26/10/2024: Server startup
+26:55:17|26/10/2024: Error: Bind failed
+29:55:17|26/10/2024: SSL context initialized successfully
+29:55:17|26/10/2024: Server startup
+29:55:17|26/10/2024: Error: Bind failed
+32:55:17|26/10/2024: SSL context initialized successfully
+32:55:17|26/10/2024: Server startup
+32:55:17|26/10/2024: Error: Bind failed
+37:55:17|26/10/2024: SSL context initialized successfully
+37:55:17|26/10/2024: Server startup
+37:55:17|26/10/2024: Error: Bind failed
+52:56:17|26/10/2024: SSL context initialized successfully
+52:56:17|26/10/2024: Server startup
+52:56:17|26/10/2024: Server is listening on port 8443
+52:56:17|26/10/2024: Warning: No OCSP responder URL found in certificate
+11:57:17|26/10/2024: Error: SSL handshake failed
+18:00:12|26/10/2024: SSL context initialized successfully
+18:00:12|26/10/2024: Server startup
+18:00:12|26/10/2024: Server is listening on port 8443
+18:00:12|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:00:26|26/10/2024: Error: SSL handshake failed
+18:01:11|26/10/2024: SSL context initialized successfully
+18:01:11|26/10/2024: Server startup
+18:01:11|26/10/2024: Error: Bind failed
+18:01:23|26/10/2024: SSL context initialized successfully
+18:01:23|26/10/2024: Server startup
+18:01:23|26/10/2024: Error: Bind failed
+18:01:32|26/10/2024: SSL context initialized successfully
+18:01:32|26/10/2024: Server startup
+18:01:32|26/10/2024: Server is listening on port 8443
+18:01:32|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:01:38|26/10/2024: SSL context initialized successfully
+18:01:38|26/10/2024: Server startup
+18:01:38|26/10/2024: Server is listening on port 8443
+18:01:38|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:01:55|26/10/2024: Error: SSL handshake failed
+18:05:04|26/10/2024: SSL context initialized successfully
+18:05:04|26/10/2024: Server startup
+18:05:04|26/10/2024: Server is listening on port 8443
+18:05:04|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:05:09|26/10/2024: SSL context initialized successfully
+18:05:09|26/10/2024: Server startup
+18:05:09|26/10/2024: Server is listening on port 8443
+18:05:09|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:05:13|26/10/2024: Error: SSL handshake failed
+18:07:18|26/10/2024: SSL context initialized successfully
+18:07:18|26/10/2024: Server startup
+18:07:18|26/10/2024: Server is listening on port 8443
+18:07:18|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:07:20|26/10/2024: Error: SSL handshake failed
+18:07:40|26/10/2024: Error: SSL handshake failed
+18:07:56|26/10/2024: SSL context initialized successfully
+18:07:56|26/10/2024: Server startup
+18:07:56|26/10/2024: Error: Bind failed
+18:08:08|26/10/2024: SSL context initialized successfully
+18:08:08|26/10/2024: Server startup
+18:08:08|26/10/2024: Error: Bind failed
+18:08:20|26/10/2024: SSL context initialized successfully
+18:08:20|26/10/2024: Server startup
+18:08:20|26/10/2024: Error: Bind failed
+18:08:49|26/10/2024: SSL context initialized successfully
+18:08:49|26/10/2024: Server startup
+18:08:49|26/10/2024: Server is listening on port 8443
+18:08:49|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:08:51|26/10/2024: Error: SSL handshake failed
+18:08:51|26/10/2024: Error: SSL handshake failed
+18:09:47|26/10/2024: Error: SSL handshake failed
+18:09:48|26/10/2024: Error: SSL handshake failed
+18:09:56|26/10/2024: Error: SSL handshake failed
+18:09:56|26/10/2024: Error: SSL handshake failed
+18:09:58|26/10/2024: Error: SSL handshake failed
+18:09:58|26/10/2024: Error: SSL handshake failed
+18:09:59|26/10/2024: Error: SSL handshake failed
+18:09:59|26/10/2024: Error: SSL handshake failed
+18:10:00|26/10/2024: Error: SSL handshake failed
+18:10:01|26/10/2024: Error: SSL handshake failed
+18:14:42|26/10/2024: SSL context initialized successfully
+18:14:42|26/10/2024: Server startup
+18:14:42|26/10/2024: Server is listening on port 8443
+18:14:42|26/10/2024: Warning: No OCSP responder URL found in certificate
+18:14:45|26/10/2024: Error: SSL handshake failed
+18:14:45|26/10/2024: Forwarding request to backend: 127.0.0.1:8081
+18:14:45|26/10/2024: Error: Backend connection failed
+18:14:45|26/10/2024: Response sent to client
+18:14:46|26/10/2024: Error: SSL handshake failed
+18:14:46|26/10/2024: Forwarding request to backend: 127.0.0.1:8082
+18:14:46|26/10/2024: Error: Backend connection failed
+18:14:46|26/10/2024: Response sent to client
+18:14:51|26/10/2024: Error: SSL handshake failed
+18:14:51|26/10/2024: Forwarding request to backend: 127.0.0.1:8081
+18:14:51|26/10/2024: Error: Backend connection failed
+18:14:51|26/10/2024: Response sent to client
+18:38:46|26/10/2024: SSL context initialized successfully
+18:38:46|26/10/2024: Server startup
+18:38:46|26/10/2024: Server is listening on port 8443
+18:38:46|26/10/2024: Warning: No OCSP responder URL found in certificate
+19:16:59|26/10/2024: SSL context initialized successfully
+19:16:59|26/10/2024: Server startup
+19:16:59|26/10/2024: Server is listening on port 8443
+19:16:59|26/10/2024: Warning: No OCSP responder URL found in certificate
