@@ -4,6 +4,21 @@ services:
   proxy_server:
     build:
       context: ..
-      dockerfile: Docker/Dockerfile
+      dockerfile: proxy.dockerfile
     privileged: true
     command: bash -c "sleep infinity"
+    networks:
+      - my_network
+
+  backend_server1:
+    build:
+      context: ..
+      dockerfile: backend.dockerfile
+    privileged: true
+    command: bash -c "sleep infinity"
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
