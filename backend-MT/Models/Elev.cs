@@ -1,11 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
 namespace backend_MT.Models
 {
-    public class Profesor : IdentityUser
+    public class Elev : IdentityUser
     {
-
         [Required]
         [MaxLength(50)]
         public string Nume { get; set; }
@@ -14,9 +13,8 @@ namespace backend_MT.Models
         [MaxLength(50)]
         public string Prenume { get; set; }
 
-        [Phone]
-        public string Telefon { get; set; }
+        public string Clasa { get; set; }
 
-        public int NrSedinte { get; set; }
+        public string Poza { get; set; }
     }
 }

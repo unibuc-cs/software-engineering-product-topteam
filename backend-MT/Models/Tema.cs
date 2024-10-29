@@ -1,21 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 
 namespace backend_MT.Models
 {
-    public class Material
+    public class Tema
     {
         [Key]
-        public int IdMaterial { get; set; }
+        public int TemaId { get; set; }
 
         [Required]
+        [MaxLength(200)]
         public string Titlu { get; set; }
 
+        [MaxLength(1000)]
         public string Descriere { get; set; }
 
-        [ForeignKey("Profesor")]
+        [MaxLength(500)]
+        public string Fisier { get; set; }
+
+        [Required]
         public string ProfesorId { get; set; }
-        
         public virtual Profesor Profesor { get; set; }
     }
 }
