@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 
-namespace backend_MT.Repositories
+namespace backend_MT.Repositories.ProfesorRepository
 {
     public interface IProfesorRepository
     {

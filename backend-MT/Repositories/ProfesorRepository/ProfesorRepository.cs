@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using System;
 
-namespace backend_MT.Repositories
+namespace backend_MT.Repositories.ProfesorRepository
 {
     public class ProfesorRepository : IProfesorRepository
     {

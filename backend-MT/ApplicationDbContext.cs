@@ -15,14 +15,14 @@ namespace backend_MT
         public DbSet<Elev> Elevi { get; set; }
         public DbSet<Profesor> Profesori { get; set; }
         public DbSet<Material> Materiale { get; set; }
-        public DbSet<Tema> Temas { get; set; }
-        public DbSet<RaspunsTema> RaspunsTemas { get; set; }
-        public DbSet<Support> Supports { get; set; }
+        public DbSet<Tema> Teme { get; set; }
+        public DbSet<RaspunsTema> RaspunsuriTeme { get; set; }
+        public DbSet<Support> Support { get; set; }
         public DbSet<Grupa> Grupe { get; set; }
         public DbSet<Curs> Cursuri { get; set; }
         public DbSet<Notificare> Notificari { get; set; }
         public DbSet<Sedinta> Sedinte { get; set; }
-        public DbSet<Feedback> Feedbacks { get; set; }
+        public DbSet<Feedback> Feedback { get; set; }
         public DbSet<Plata> Plati { get; set; }
         public DbSet<Mesaj> Mesaje { get; set; }
 
