@@ -5,6 +5,13 @@
 # Ignore user-specific files
 *.user
 
+# Ignore build directories
+bin/
+obj/
+
+# Ignore JetBrains Rider/IntelliJ configuration files
+.idea/
+
 # Ignore configuration files with sensitive data
 appsettings.Development.json
 appsettings.json
