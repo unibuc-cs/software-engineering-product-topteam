@@ -54,7 +54,7 @@ builder.Services.AddScoped<IMaterialService, MaterialService>();
 builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
 builder.Services.AddScoped<IMesajService, MesajService>();
 builder.Services.AddScoped<IMesajRepository, MesajRepository>();
-builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<INotificareService, NotificareService>();
 builder.Services.AddScoped<INotificareRepository, NotificareRepository>();
 builder.Services.AddScoped<IPlataRepository, PlataRepository>();
 builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();

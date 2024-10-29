@@ -3,11 +3,11 @@ using backend_MT.Repositories.NotificareRepository;
 
 namespace backend_MT.Service.NotificareService
 {
-    public class NotificationService : INotificationService
+    public class NotificareService : INotificareService
     {
         private readonly INotificareRepository _notificareRepository;
 
-        public NotificationService(INotificareRepository notificareRepository)
+        public NotificareService(INotificareRepository notificareRepository)
         {
             _notificareRepository = notificareRepository;
         }

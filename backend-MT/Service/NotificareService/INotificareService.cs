@@ -2,7 +2,7 @@
 
 namespace backend_MT.Service.NotificareService
 {
-    public interface INotificationService
+    public interface INotificareService
     {
         Task<IEnumerable<Notificare>> GetAllNotificationsAsync();
         Task<Notificare> GetNotificationByIdAsync(int id);
