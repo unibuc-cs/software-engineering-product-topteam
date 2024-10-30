@@ -1,0 +1,24 @@
+# Ignore build output
+/bin/
+/obj/
+
+# Ignore user-specific files
+*.user
+
+# Ignore build directories
+bin/
+obj/
+
+# Ignore JetBrains Rider/IntelliJ configuration files
+.idea/
+
+# Ignore configuration files with sensitive data
+appsettings.Development.json
+appsettings.json
+
+# Ignore Visual Studio specific files
+.vs/
+
+# Ignore NuGet packages
+*.nupkg
+*.snupkg
