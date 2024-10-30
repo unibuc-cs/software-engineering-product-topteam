@@ -22,6 +22,6 @@ namespace backend_MT.Models
 
         [Required]
         public string ReceptorId { get; set; }
-        public virtual Elev Receptor { get; set; }
+        public virtual User Receptor { get; set; }
     }
 }

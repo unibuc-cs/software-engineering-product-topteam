@@ -12,22 +12,22 @@ namespace backend_MT.Service.ElevService
             _elevRepository = elevRepository;
         }
 
-        public async Task<IEnumerable<Elev>> GetAllStudentsAsync()
+        public async Task<IEnumerable<User>> GetAllStudentsAsync()
         {
             return await _elevRepository.GetAllStudentsAsync();
         }
 
-        public async Task<Elev> GetStudentByIdAsync(string id)
+        public async Task<User> GetStudentByIdAsync(string id)
         {
             return await _elevRepository.GetStudentByIdAsync(id);
         }
 
-        public async Task AddStudentAsync(Elev elev)
+        public async Task AddStudentAsync(User elev)
         {
             await _elevRepository.AddStudentAsync(elev);
         }
 
-        public async Task UpdateStudentAsync(Elev elev)
+        public async Task UpdateStudentAsync(User elev)
         {
             await _elevRepository.UpdateStudentAsync(elev);
         }

@@ -17,7 +17,7 @@ namespace backend_MT.Controllers
 
         // GET: api/elev
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Elev>>> GetAllStudents()
+        public async Task<ActionResult<IEnumerable<User>>> GetAllStudents()
         {
             var elevi = await _elevService.GetAllStudentsAsync();
             return Ok(elevi);
@@ -25,7 +25,7 @@ namespace backend_MT.Controllers
 
         // GET: api/elev/{id}
         [HttpGet("{id}")]
-        public async Task<ActionResult<Elev>> GetStudentById(string id)
+        public async Task<ActionResult<User>> GetStudentById(string id)
         {
             var elev = await _elevService.GetStudentByIdAsync(id);
             if (elev == null)
@@ -37,7 +37,7 @@ namespace backend_MT.Controllers
 
         // POST: api/elev
         [HttpPost]
-        public async Task<ActionResult<Elev>> AddStudent(Elev elev)
+        public async Task<ActionResult<User>> AddStudent(User elev)
         {
             await _elevService.AddStudentAsync(elev);
             return CreatedAtAction(nameof(GetStudentById), new { id = elev.Id }, elev); // Asumând că Elev are o proprietate Id
@@ -45,7 +45,7 @@ namespace backend_MT.Controllers
 
         // PUT: api/elev/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(string id, Elev elev)
+        public async Task<IActionResult> UpdateStudent(string id, User elev)
         {
             if (id != elev.Id) // Verifică dacă ID-urile se potrivesc
             {

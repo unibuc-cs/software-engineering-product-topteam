@@ -17,6 +17,6 @@ namespace backend_MT.Models
 
         [Required]
         public string ElevId { get; set; } 
-        public virtual Elev Elev { get; set; }
+        public virtual User Elev { get; set; }
     }
 }

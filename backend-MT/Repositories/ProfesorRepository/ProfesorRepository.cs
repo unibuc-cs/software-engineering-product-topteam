@@ -1,4 +1,5 @@
-﻿using backend_MT.Models;
+﻿using backend_MT.Data;
+using backend_MT.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 

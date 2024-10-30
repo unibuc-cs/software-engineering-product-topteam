@@ -1,3 +1,4 @@
+using backend_MT.Data;
 using backend_MT.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
@@ -14,23 +15,23 @@ namespace backend_MT.Repositories.ElevRepository
             _context = context;
         }
 
-        public async Task<IEnumerable<Elev>> GetAllStudentsAsync()
+        public async Task<IEnumerable<User>> GetAllStudentsAsync()
         {
             return await _context.Elevi.ToListAsync();
         }
 
-        public async Task<Elev> GetStudentByIdAsync(string id)
+        public async Task<User> GetStudentByIdAsync(string id)
         {
             return await _context.Elevi.FindAsync(id);
         }
 
-        public async Task AddStudentAsync(Elev elev)
+        public async Task AddStudentAsync(User elev)
         {
             await _context.Elevi.AddAsync(elev);
             await _context.SaveChangesAsync();
         }
 
-        public async Task UpdateStudentAsync(Elev elev)
+        public async Task UpdateStudentAsync(User elev)
         {
             _context.Elevi.Update(elev);
             await _context.SaveChangesAsync();

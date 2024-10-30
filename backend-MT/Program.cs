@@ -1,4 +1,4 @@
-using backend_MT;
+using backend_MT.Data;
 using backend_MT.Models;
 using backend_MT.Repositories.CursRepository;
 using backend_MT.Repositories.ElevRepository;

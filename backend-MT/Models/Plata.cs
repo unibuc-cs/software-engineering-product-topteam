@@ -19,7 +19,7 @@ namespace backend_MT.Models
         [Required]
         [ForeignKey("Elev")]
         public string ElevId { get; set; }
-        public virtual Elev Elev { get; set; }
+        public virtual User Elev { get; set; }
 
         [Required]
         [ForeignKey("Curs")]
