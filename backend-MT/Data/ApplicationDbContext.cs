@@ -2,8 +2,9 @@
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using backend_MT.Models;
+using Microsoft.VisualBasic;
 
-namespace backend_MT
+namespace backend_MT.Data
 {
     public class ApplicationDbContext : IdentityDbContext<IdentityUser>
     {
@@ -12,7 +13,7 @@ namespace backend_MT
         {
         }
 
-        public DbSet<Elev> Elevi { get; set; }
+        public DbSet<User> Elevi { get; set; }
         public DbSet<Profesor> Profesori { get; set; }
         public DbSet<Material> Materiale { get; set; }
         public DbSet<Tema> Teme { get; set; }
@@ -30,8 +31,8 @@ namespace backend_MT
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Elev>().ToTable("Elevi").HasBaseType<IdentityUser>();
-            modelBuilder.Entity<Profesor>().ToTable("Profesori").HasBaseType<IdentityUser>();
+            modelBuilder.Entity<Tema>()
+                .HasKey(i => i.TemaId);
 
             modelBuilder.Entity<Tema>()
                 .HasOne(t => t.Profesor)
@@ -39,9 +40,15 @@ namespace backend_MT
                 .HasForeignKey(t => t.ProfesorId);
 
             modelBuilder.Entity<Material>()
+                .HasKey(i => i.MaterialId);
+
+            modelBuilder.Entity<Material>()
                 .HasOne(m => m.Profesor)
                 .WithMany()
                 .HasForeignKey(m => m.ProfesorId);
+
+            modelBuilder.Entity<RaspunsTema>()
+                .HasKey(i => i.RaspunsTemaId);
 
             modelBuilder.Entity<RaspunsTema>()
                 .HasOne(rt => rt.Tema)
@@ -49,9 +56,15 @@ namespace backend_MT
                 .HasForeignKey(rt => rt.TemaId);
 
             modelBuilder.Entity<Support>()
+                .HasKey(i => i.SupportId);
+
+            modelBuilder.Entity<Support>()
                 .HasOne(s => s.Elev)
                 .WithMany()
                 .HasForeignKey(s => s.ElevId);
+
+            modelBuilder.Entity<Grupa>()
+                .HasKey(i => i.GrupaId);
 
             modelBuilder.Entity<Grupa>()
                 .HasOne(g => g.Profesor)
@@ -64,14 +77,23 @@ namespace backend_MT
                 .HasForeignKey(g => g.CursId);
 
             modelBuilder.Entity<Notificare>()
+                .HasKey(i => i.NotificareId);
+
+            modelBuilder.Entity<Notificare>()
                 .HasOne(n => n.Receptor)
                 .WithMany()
                 .HasForeignKey(n => n.ReceptorId);
 
             modelBuilder.Entity<Sedinta>()
+                .HasKey(i => i.SedintaId);
+
+            modelBuilder.Entity<Sedinta>()
                 .HasOne(s => s.Grupa)
                 .WithMany()
                 .HasForeignKey(s => s.GrupaId);
+
+            modelBuilder.Entity<Feedback>()
+                .HasKey(i => i.FeedbackId);
 
             modelBuilder.Entity<Feedback>()
                 .HasOne(f => f.Sedinta)
@@ -84,6 +106,9 @@ namespace backend_MT
                 .HasForeignKey(f => f.ElevId);
 
             modelBuilder.Entity<Plata>()
+                .HasKey(i => i.PlataId);
+
+            modelBuilder.Entity<Plata>()
                 .HasOne(p => p.Elev)
                 .WithMany()
                 .HasForeignKey(p => p.ElevId);
@@ -92,6 +117,9 @@ namespace backend_MT
                 .HasOne(p => p.Curs)
                 .WithMany()
                 .HasForeignKey(p => p.CursId);
+
+            modelBuilder.Entity<Mesaj>()
+                .HasKey(i => i.MesajId);
 
             modelBuilder.Entity<Mesaj>()
                 .HasOne(m => m.Emitator)

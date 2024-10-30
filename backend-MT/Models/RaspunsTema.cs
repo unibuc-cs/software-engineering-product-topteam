@@ -5,16 +5,12 @@ namespace backend_MT.Models
     public class RaspunsTema
     {
         [Key]
-        public int RaspunsTemaId { get; set; }
-
-        [MaxLength(500)]
-        public string Fisier { get; set; }
-
-        [Range(0, 100)]
-        public int Punctaj { get; set; }
-
-        [Required]
-        public int TemaId { get; set; }
-        public virtual Tema Tema { get; set; }
+        public int raspunsTemaId { get; set; }
+        public string fisier { get; set; }
+        public int punctaj { get; set; }
+        public int temaId { get; set; }
+        public virtual Tema tema { get; set; }
+        public int userID { get; set; }
+        public virtual User user { get; set; }
     }
 }

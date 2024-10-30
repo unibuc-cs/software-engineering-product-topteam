@@ -7,22 +7,13 @@ namespace backend_MT.Models
     public class Sedinta
     {
         [Key]
-        public int SedintaId { get; set; }
-
-        [Required]
-        public string Titlu { get; set; }
-
-        [Required]
-        public DateTime Zi { get; set; }
-
-        [Required]
-        public DateTime OraIncepere { get; set; }
-
-        [Required]
-        public DateTime OraIncheiere { get; set; }
-
-        [ForeignKey("Grupa")]
-        public int GrupaId { get; set; }
-        public virtual Grupa Grupa { get; set; }
+        public int sedintaId { get; set; }
+        public string titlu { get; set; }
+        public DateTime zi { get; set; }
+        public DateTime oraIncepere { get; set; }
+        public DateTime oraIncheiere { get; set; }
+        public int grupaId { get; set; }
+        public virtual Grupa grupa { get; set; }
+        public ICollection<Prezenta> prezente {  get; set; }
     }
 }

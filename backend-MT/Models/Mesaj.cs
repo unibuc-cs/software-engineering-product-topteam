@@ -4,16 +4,12 @@ namespace backend_MT.Models
 {
     public class Mesaj
     {
-        [Key] public int MesajId { get; set; }
-
-        [Required] [MaxLength(2000)] public string MesajText { get; set; }
-
-        [Required] [MaxLength(10)] public string TipMesaj { get; set; } // "Privat" or "Grup"
-
-        [Required] public string EmitatorId { get; set; }
-        public virtual Elev Emitator { get; set; }
-
-        [Required] public string ReceptorId { get; set; }
-        public virtual Elev Receptor { get; set; }
+        [Key] public int mesajId { get; set; }
+        public string mesajText { get; set; }
+        public string tipMesaj { get; set; } // "Privat" or "Grup"
+        public int emitatorId { get; set; }
+        public User emitator { get; set; }
+        public int receptorId { get; set; }
+        public User receptor { get; set; }
     }
 }
