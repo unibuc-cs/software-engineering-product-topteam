@@ -5,11 +5,13 @@ def suprapunere_intervale(interval1, interval2):
     def parse_interval(interval):
         if isinstance(interval, tuple):
             start, end = interval
+            print("Ceva111111")
         elif "-" in interval:
             start, end = interval.split("-")
         else:
             start = interval
             end = interval
+            print("Ceva3333333")
         return int(start.replace(":", "")), int(end.replace(":", ""))
 
     try:
@@ -90,7 +92,7 @@ model += lpSum(len(grupa_key) * x[(zi, interval_prof, grupa_key)] for (zi, inter
 
 for elev in elevi:
     model += lpSum(x[(zi, interval_prof, grupa_key)]
-                   for (zi, interval_prof, grupa_key) in x if elev["nume"] in grupa_key) <= 1, f"Restrictie_{elev['nume']}"
+        for (zi, interval_prof, grupa_key) in x if elev["nume"] in grupa_key) <= 1, f"Restrictie_{elev['nume']}"
 
 
 model.solve()

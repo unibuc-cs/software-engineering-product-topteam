@@ -1,0 +1,54 @@
+# Ignore build results
+bin/
+obj/
+
+# Ignore user-specific files
+*.user
+*.suo
+*.userprefs
+
+# Ignore Visual Studio workspace and other files
+.vscode/
+.vs/
+*.code-workspace
+
+# Ignore build logs and other temporary files
+*.log
+*.tlog
+*.tmp
+
+# Ignore package-related files
+packages/
+*.nupkg
+project.lock.json
+project.fragment.lock.json
+
+# Ignore NuGet packages directory
+**/packages/*
+!**/packages/build/
+!**/packages/repositories.config
+
+# Ignore Rider-specific files
+.idea/
+*.sln.iml
+
+# Ignore Resharper files
+_ReSharper*/
+*.[Rr]e[Ss]harper
+
+# Ignore JetBrains Rider plugin files
+*.DotSettings.user
+
+# Ignore DLLs and PDBs
+*.dll
+*.pdb
+
+# Ignore generated files
+*.gen.cs
+
+# Ignore Publish outputs
+publish/
+
+# Ignore temp files from Editor
+*~
+*.sln.docstates
