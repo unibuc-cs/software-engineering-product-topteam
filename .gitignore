@@ -22,4 +22,3 @@ appsettings.json
 # Ignore NuGet packages
 *.nupkg
 *.snupkg
-/backend-MT.sln
