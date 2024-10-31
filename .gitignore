@@ -22,3 +22,6 @@ appsettings.json
 # Ignore NuGet packages
 *.nupkg
 *.snupkg
+
+
+.vscode/
