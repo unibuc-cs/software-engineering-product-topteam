@@ -10,7 +10,7 @@ namespace backend_MT.Models
         public int punctaj { get; set; }
         public int temaId { get; set; }
         public virtual Tema tema { get; set; }
-        public int userID { get; set; }
+        public int userId { get; set; }
         public virtual User user { get; set; }
     }
 }

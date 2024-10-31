@@ -11,6 +11,7 @@ namespace backend_MT.Models
         public DateTime data { get; set; }
         public string tipNotificare { get; set; }
         public int receptorId { get; set; }//grupId, userId, profesorId
-        public User Receptor { get; set; }
+        public virtual User? user { get; set; }
+        public virtual Grupa? grupa { get; set; }
     }
 }

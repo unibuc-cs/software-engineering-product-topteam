@@ -8,8 +8,8 @@ namespace backend_MT.Models
         public string mesajText { get; set; }
         public string tipMesaj { get; set; } // "Privat" or "Grup"
         public int emitatorId { get; set; }
-        public User emitator { get; set; }
+        public virtual User emitator { get; set; }
         public int receptorId { get; set; }
-        public User receptor { get; set; }
+        public virtual User receptor { get; set; }
     }
 }

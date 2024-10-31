@@ -8,7 +8,7 @@ namespace backend_MT.Models
         public int abonamentId { get; set; }
         public int userId { get; set; }
         public virtual User user { get; set; }
-        public int sedintaId {  get; set; }
-        public virtual Sedinta sedinta { get; set; }
+        public int cursId {  get; set; }
+        public virtual Curs curs { get; set; }
     }
 }

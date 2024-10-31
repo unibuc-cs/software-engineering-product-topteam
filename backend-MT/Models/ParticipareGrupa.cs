@@ -7,8 +7,8 @@ namespace backend_MT.Models
         [Key]
         public int participareGrupaId { get; set; }
         public int userId { get; set; }
-        public User user { get; set; }
+        public virtual User user { get; set; }
         public int grupaId { get; set; }
-        public Grupa grupa { get; set; }
+        public virtual Grupa grupa { get; set; }
     }
 }

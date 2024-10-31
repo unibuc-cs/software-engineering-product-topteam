@@ -7,7 +7,7 @@ namespace backend_MT.Models
         [Key]
         public int supportId { get; set; }
         public string mesaj { get; set; }
-        public int elevId { get; set; }
-        public virtual User elev { get; set; }
+        public int userId { get; set; }
+        public virtual User user { get; set; }
     }
 }

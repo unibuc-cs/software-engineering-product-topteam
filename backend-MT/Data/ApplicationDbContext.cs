@@ -6,130 +6,112 @@ using Microsoft.VisualBasic;
 
 namespace backend_MT.Data
 {
-    public class ApplicationDbContext : IdentityDbContext<IdentityUser>
+    public class ApplicationDbContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
         }
 
-        public DbSet<User> Elevi { get; set; }
-        public DbSet<Profesor> Profesori { get; set; }
-        public DbSet<Material> Materiale { get; set; }
-        public DbSet<Tema> Teme { get; set; }
-        public DbSet<RaspunsTema> RaspunsuriTeme { get; set; }
-        public DbSet<Support> Support { get; set; }
-        public DbSet<Grupa> Grupe { get; set; }
-        public DbSet<Curs> Cursuri { get; set; }
-        public DbSet<Notificare> Notificari { get; set; }
-        public DbSet<Sedinta> Sedinte { get; set; }
-        public DbSet<Feedback> Feedback { get; set; }
-        public DbSet<Plata> Plati { get; set; }
-        public DbSet<Mesaj> Mesaje { get; set; }
+        public DbSet<User> user { get; set; }
+        public DbSet<Material> material { get; set; }
+        public DbSet<Tema> tema { get; set; }
+        public DbSet<RaspunsTema> raspunsTema { get; set; }
+        public DbSet<Support> support { get; set; }
+        public DbSet<Grupa> grupa { get; set; }
+        public DbSet<Curs> curs { get; set; }
+        public DbSet<Notificare> notificare { get; set; }
+        public DbSet<Sedinta> sedinta { get; set; }
+        public DbSet<Feedback> feedback { get; set; }
+        public DbSet<Plata> plata { get; set; }
+        public DbSet<Mesaj> mesaj { get; set; }
+        public DbSet<Prezenta> prezenta {  get; set; }
+        public DbSet<Predare> predare { get; set; }
+        public DbSet<Abonament> abonament {  get; set; }
+        public DbSet<ParticipareGrupa> participareGrupa {  get; set; }
+        
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
 
-            modelBuilder.Entity<Tema>()
-                .HasKey(i => i.TemaId);
+            modelBuilder.Entity<Mesaj>()
+            .HasOne(m => m.emitator)
+            .WithMany()
+            .HasForeignKey(m => m.emitatorId)
+            .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Tema>()
-                .HasOne(t => t.Profesor)
+            modelBuilder.Entity<Mesaj>()
+                .HasOne(m => m.receptor)
                 .WithMany()
-                .HasForeignKey(t => t.ProfesorId);
-
-            modelBuilder.Entity<Material>()
-                .HasKey(i => i.MaterialId);
-
-            modelBuilder.Entity<Material>()
-                .HasOne(m => m.Profesor)
-                .WithMany()
-                .HasForeignKey(m => m.ProfesorId);
+                .HasForeignKey(m => m.receptorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RaspunsTema>()
-                .HasKey(i => i.RaspunsTemaId);
+                .HasOne(rt => rt.user)
+                .WithMany(u => u.raspunsuriTema)
+                .HasForeignKey(rt => rt.userId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RaspunsTema>()
-                .HasOne(rt => rt.Tema)
-                .WithMany()
-                .HasForeignKey(rt => rt.TemaId);
+                .HasOne(rt => rt.tema)
+                .WithMany(t => t.raspunsuriTema)
+                .HasForeignKey(rt => rt.temaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Support>()
-                .HasKey(i => i.SupportId);
+            modelBuilder.Entity<Tema>()
+                .HasOne(t => t.user)                 
+                .WithMany(u => u.teme)               
+                .HasForeignKey(t => t.userId)         
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Support>()
-                .HasOne(s => s.Elev)
-                .WithMany()
-                .HasForeignKey(s => s.ElevId);
+            modelBuilder.Entity<ParticipareGrupa>()
+                .HasOne(pg => pg.user)
+                .WithMany(u => u.participariGrupa)
+                .HasForeignKey(pg => pg.userId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Grupa>()
-                .HasKey(i => i.GrupaId);
+            modelBuilder.Entity<ParticipareGrupa>()
+                .HasOne(pg => pg.grupa)
+                .WithMany(g => g.participariGrupa)
+                .HasForeignKey(pg => pg.grupaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Grupa>()
-                .HasOne(g => g.Profesor)
-                .WithMany()
-                .HasForeignKey(g => g.ProfesorId);
+            modelBuilder.Entity<Abonament>()
+                .HasOne(a => a.user)
+                .WithMany(u => u.abonamente)
+                .HasForeignKey(a => a.userId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Grupa>()
-                .HasOne(g => g.Curs)
-                .WithMany()
-                .HasForeignKey(g => g.CursId);
-
-            modelBuilder.Entity<Notificare>()
-                .HasKey(i => i.NotificareId);
-
-            modelBuilder.Entity<Notificare>()
-                .HasOne(n => n.Receptor)
-                .WithMany()
-                .HasForeignKey(n => n.ReceptorId);
-
-            modelBuilder.Entity<Sedinta>()
-                .HasKey(i => i.SedintaId);
-
-            modelBuilder.Entity<Sedinta>()
-                .HasOne(s => s.Grupa)
-                .WithMany()
-                .HasForeignKey(s => s.GrupaId);
+            modelBuilder.Entity<Abonament>()
+                .HasOne(a => a.curs)
+                .WithMany(c => c.abonamente)
+                .HasForeignKey(a => a.cursId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Feedback>()
-                .HasKey(i => i.FeedbackId);
+                .HasOne(f => f.sedinta)
+                .WithMany(s => s.feedbackuri)
+                .HasForeignKey(f => f.sedintaId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Feedback>()
-                .HasOne(f => f.Sedinta)
-                .WithMany()
-                .HasForeignKey(f => f.SedintaId);
+                .HasOne(f => f.user)
+                .WithMany(u => u.feedbackuri)
+                .HasForeignKey(f => f.userId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Feedback>()
-                .HasOne(f => f.Elev)
-                .WithMany()
-                .HasForeignKey(f => f.ElevId);
+            modelBuilder.Entity<Prezenta>()
+                .HasOne(p => p.user)
+                .WithMany(u => u.prezente)
+                .HasForeignKey(p => p.userId)
+                .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<Plata>()
-                .HasKey(i => i.PlataId);
-
-            modelBuilder.Entity<Plata>()
-                .HasOne(p => p.Elev)
-                .WithMany()
-                .HasForeignKey(p => p.ElevId);
-
-            modelBuilder.Entity<Plata>()
-                .HasOne(p => p.Curs)
-                .WithMany()
-                .HasForeignKey(p => p.CursId);
-
-            modelBuilder.Entity<Mesaj>()
-                .HasKey(i => i.MesajId);
-
-            modelBuilder.Entity<Mesaj>()
-                .HasOne(m => m.Emitator)
-                .WithMany()
-                .HasForeignKey(m => m.EmitatorId);
-
-            modelBuilder.Entity<Mesaj>()
-                .HasOne(m => m.Receptor)
-                .WithMany()
-                .HasForeignKey(m => m.ReceptorId);
+            modelBuilder.Entity<Prezenta>()
+                .HasOne(p => p.sedinta)
+                .WithMany(s => s.prezente)
+                .HasForeignKey(p => p.sedintaId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

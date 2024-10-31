@@ -15,5 +15,6 @@ namespace backend_MT.Models
         public int grupaId { get; set; }
         public virtual Grupa grupa { get; set; }
         public ICollection<Prezenta> prezente {  get; set; }
+        public ICollection<Feedback> feedbackuri { get; set; }
     }
 }

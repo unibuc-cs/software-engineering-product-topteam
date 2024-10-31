@@ -9,7 +9,8 @@ namespace backend_MT.Models
         public string titlu { get; set; }
         public string descriere { get; set; }
         public string fisier { get; set; }
-        public int profesorId { get; set; }
-        public virtual Profesor profesor { get; set; }
+        public int userId { get; set; }
+        public virtual User user { get; set; }
+        public ICollection<RaspunsTema> raspunsuriTema {  get; set; }
     }
 }

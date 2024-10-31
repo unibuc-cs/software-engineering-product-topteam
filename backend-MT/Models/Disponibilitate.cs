@@ -2,13 +2,13 @@
 
 namespace backend_MT.Models
 {
-    public class Predare
+    public class Disponibilitate
     {
         [Key]
-        public int predareId {  get; set; }
+        public int disponibilitateId { get; set; }
+        public DayOfWeek zi { get; set; }
+        public TimeSpan oraIncepere { get; set; }
         public int userId { get; set; }
         public virtual User user {  get; set; }
-        public int cursId { get; set; }
-        public virtual Curs curs { get; set; }
     }
 }
