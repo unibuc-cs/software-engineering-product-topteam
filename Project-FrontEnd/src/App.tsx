@@ -1,35 +1,28 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.tsx
+import React from "react";
+import Header from "./components/Header";
+import Container from "@mui/material/Container";
+import Typography from "@mui/material/Typography";
+import Box from "@mui/material/Box";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App: React.FC = () => {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
-}
+    <div>
+      <Header />
+      <Container maxWidth="md">
+        <Box mt={4} mb={4} textAlign="center">
+          <Typography variant="h4" component="h1" gutterBottom>
+            Bine ai venit în aplicația mea!
+          </Typography>
+          <Typography variant="body1">
+            Acesta este conținutul principal al paginii. Folosește Container și
+            Box pentru a organiza secțiunile și a le centra.
+          </Typography>
+          {/* Adaugă mai multe componente și conținut după nevoie */}
+        </Box>
+      </Container>
+    </div>
+  );
+};
 
-export default App
+export default App;
