@@ -11,6 +11,8 @@ namespace backend_MT.Models
         public string prenume { get; set; }
         public string? nivel { get; set; }
         public string pozaProfil { get; set; }
+        public string email { get; set; }
+        public string nrTelefon { get; set; }
         public ICollection<ParticipareGrupa>? participariGrupa { get; set; }
         public ICollection<Abonament>? abonamente { get; set; }
         public ICollection<Plata>? plati {  get; set; }
@@ -28,7 +30,7 @@ namespace backend_MT.Models
         public ICollection<Material>? materiale { get; set; }
         public ICollection<Tema>? teme { get; set; }
         public ICollection<Predare>? predare { get; set; }
-        public bool profesorVerificat {  get; set; }
+        public bool? profesorVerificat {  get; set; }
 
     }
 }
