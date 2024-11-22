@@ -1,7 +1,7 @@
 using backend_MT.Data;
 using backend_MT.Models;
 using backend_MT.Repositories.CursRepository;
-using backend_MT.Repositories.ElevRepository;
+//using backend_MT.Repositories.ElevRepository;
 using backend_MT.Repositories.FeedbackRepository;
 using backend_MT.Repositories.GrupaRepository;
 using backend_MT.Repositories.MaterialeRepository;
@@ -13,7 +13,6 @@ using backend_MT.Repositories.SedintaRepository;
 using backend_MT.Repositories.SupportRepository;
 using backend_MT.Repositories.TemaRepository;
 using backend_MT.Service.CursService;
-using backend_MT.Service.ElevService;
 using backend_MT.Service.FeedbackService;
 using backend_MT.Service.GrupaService;
 using backend_MT.Service.MaterialeService;
