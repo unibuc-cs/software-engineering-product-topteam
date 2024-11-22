@@ -3,19 +3,11 @@ import RegisterForm from "../components/RegisterForm/RegisterForm";
 
 const RegisterPage = () => {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        height: "100vh",
-        backgroundColor: "#f5f5f5",
-        padding: "20px",
-      }}
-    >
-      <h1>Register</h1>
-      <RegisterForm />
+    <div className="login-page">
+      <div className="content-box">
+        <h1>Register</h1>
+        <RegisterForm />
+      </div>
     </div>
   );
 };
