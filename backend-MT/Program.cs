@@ -13,7 +13,6 @@ using backend_MT.Repositories.SedintaRepository;
 using backend_MT.Repositories.SupportRepository;
 using backend_MT.Repositories.TemaRepository;
 using backend_MT.Service.CursService;
-using backend_MT.Service.ElevService;
 using backend_MT.Service.FeedbackService;
 using backend_MT.Service.GrupaService;
 using backend_MT.Service.MaterialeService;
