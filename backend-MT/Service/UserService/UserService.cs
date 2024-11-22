@@ -85,7 +85,7 @@ namespace backend_MT.Services
 				prenume = newUser.prenume,
 				nrTelefon = newUser.nrTelefon,
 				nivel = newUser.nivel,
-				pozaProfil = _s3Service.GetFileUrl(newUser.username + "_pfp.png"),
+				//pozaProfil = _s3Service.GetFileUrl(newUser.username + "_pfp.png"),
 				profesorVerificat = newUser.profesorVerificat
 			};
 
@@ -93,7 +93,7 @@ namespace backend_MT.Services
 
 			if (result.Succeeded)
 			{
-				await _userManager.AddToRoleAsync(user, Roles.Default.ToString());
+				await _userManager.AddToRoleAsync(user, Roles.Profesor.ToString());
 			}
 
 			return result;
@@ -101,34 +101,17 @@ namespace backend_MT.Services
 		public async Task resetPassword(ResetPasswordDTO user)
 		{
 			var userByName = await _userManager.FindByNameAsync(user.username);
-			var result = await _userManager.ResetPasswordAsync(userByName, user.token, user.Password);
+			var result = await _userManager.ResetPasswordAsync(userByName, user.token, user.password);
 			if (!result.Succeeded)
 			{
 				throw new WrongDetailsException("Token invalid");
 			}
 		}
-		public async Task uploadDocument(string username, string document, IFormFile file)
-		{
-			var user = await _userManager.FindByNameAsync(username);
-			if (document == "permis")
-			{
-				user.permis = _s3Service.GetFileUrl(username + "_permis.png");
-			}
-			else if (document == "carteIdentitate")
-			{
-				user.carteIdentitate = _s3Service.GetFileUrl(username + "_carteIdentitate.png");
-			}
-			else
-			{
-				throw new WrongDetailsException("Tipul de document nu exista");
-			}
-			await _userManager.UpdateAsync(user);
-			await _s3Service.UploadFileAsync(username + "_" + document + ".png", file);
-		}
+
 		public async Task forgotPassword(ForgotPasswordDTO userDTO)
 		{
-			var userByName = await _userManager.FindByNameAsync(userDTO.Username);
-			var userByEmail = await _userManager.FindByEmailAsync(userDTO.Email);
+			var userByName = await _userManager.FindByNameAsync(userDTO.username);
+			var userByEmail = await _userManager.FindByEmailAsync(userDTO.email);
 			if (userByName == null || userByEmail == null)
 			{
 				throw new NotFoundException("Userul nu a fost gasit");
@@ -143,7 +126,7 @@ namespace backend_MT.Services
 			string emailHtml = await File.ReadAllTextAsync("Templates/ForgotEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{confirmationUrl}}", url);
 			emailHtml = emailHtml.Replace("{{username}}", userByName.UserName);
-			await _emailSender.SendEmailAsync(userByName.Email, "Resetare parola", emailHtml);
+			//await _emailSender.SendEmailAsync(userByName.Email, "Resetare parola", emailHtml);
 		}
 		public async Task sendConfirmationEmail(RegisterDTO newUser)
 		{
@@ -156,30 +139,29 @@ namespace backend_MT.Services
 			string emailHtml = await File.ReadAllTextAsync("Templates/ConfirmationEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{confirmationUrl}}", url);
 			emailHtml = emailHtml.Replace("{{username}}", newUser.username);
-			await _emailSender.SendEmailAsync(user.Email, "Confirmare email", emailHtml);
+			//await _emailSender.SendEmailAsync(user.Email, "Confirmare email", emailHtml);
 		}
 		public async Task failureEmail(RegisterDTO newUser, string reason)
 		{
 			string emailHtml = await File.ReadAllTextAsync("Templates/FailureEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{username}}", newUser.username);
 			emailHtml = emailHtml.Replace("{{reason}}", reason);
-			await _emailSender.SendEmailAsync(newUser.email, "Inregistrare esuata", emailHtml);
+			//await _emailSender.SendEmailAsync(newUser.email, "Inregistrare esuata", emailHtml);
 		}
-		public async Task<SafeUserDTO> getUserProfile(string username)
+		public async Task<UserDTO> getUserProfile(string username)
 		{
 			var u = await _userManager.FindByNameAsync(username) ?? throw new NotFoundException("Userul nu a fost gasit");
-			int nrPostari = await _postareRepository.NrPostareByUser(u.Id);
-			Console.WriteLine(nrPostari);
-			return new SafeUserDTO()
+			//Console.WriteLine(nrPostari);
+			return new UserDTO()
 			{
-				id = u.Id,
+				username = u.username,
+				email = u.email,
 				nume = u.nume,
 				prenume = u.prenume,
-				username = u.UserName,
-				nrTelefon = u.PhoneNumber,
-				linkPozaProfil = u.pozaProfil,
-				dataNasterii = u.dataNasterii,
-				nrPostari = nrPostari
+				nrTelefon = u.nrTelefon,
+				nivel = u.nivel,
+				pozaProfil = u.pozaProfil,
+				profesorVerificat = u.profesorVerificat
 			};
 		}
 		public async Task<UserDTO> getUserDetails(string username)
@@ -187,16 +169,14 @@ namespace backend_MT.Services
 			var user = await _userManager.FindByNameAsync(username) ?? throw new NotFoundException("Userul nu a fost gasit");
 			var userInfo = new UserDTO
 			{
-				username = user.UserName,
-				email = user.Email,
+				username = user.username,
+				email = user.email,
 				nume = user.nume,
 				prenume = user.prenume,
-				nrTelefon = user.PhoneNumber,
-				permis = user.permis == "N/A" ? false : true,
-				carteIdentitate = user.carteIdentitate == "N/A" ? false : true,
-				dataNasterii = user.dataNasterii,
-				linkPozaProfil = user.pozaProfil,
-				puncteFidelitate = user.puncteFidelitate
+				nrTelefon = user.nrTelefon,
+				nivel = user.nivel,
+				pozaProfil = user.pozaProfil,
+				profesorVerificat = user.profesorVerificat
 			};
 			return userInfo;
 		}
@@ -236,7 +216,7 @@ namespace backend_MT.Services
 					new Claim(ClaimTypes.Name , user.nume),
 					new Claim(ClaimTypes.Email , user.Email),
 					new Claim(ClaimTypes.MobilePhone , user.PhoneNumber),
-					new Claim(ClaimTypes.Role,Role.FirstOrDefault(Roles.Default.ToString()))
+					new Claim(ClaimTypes.Role,Role.FirstOrDefault(Roles.Elev.ToString()))
 				};
 			var token = new JwtSecurityToken(
 				issuer: "https://localhost:7215/",

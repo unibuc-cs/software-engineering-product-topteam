@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace ProiectMDS.Exceptions
+namespace backend_MT.Exceptions
 {
 	[Serializable]
 	internal class NotFoundException : Exception
