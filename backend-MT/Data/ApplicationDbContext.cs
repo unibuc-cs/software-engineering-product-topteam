@@ -29,7 +29,7 @@ namespace backend_MT.Data
         public DbSet<Predare> predare { get; set; }
         public DbSet<Abonament> abonament {  get; set; }
         public DbSet<ParticipareGrupa> participareGrupa {  get; set; }
-        
+        public DbSet<Disponibilitate> disponibilitate { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
