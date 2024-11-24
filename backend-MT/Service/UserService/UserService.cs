@@ -63,8 +63,8 @@ namespace backend_MT.Services
 				throw new WrongDetailsException("Token invalid");
 			}
 		}
-		public async Task<bool> uploadPhoto(RegisterDTO newUser)
-		{
+		//public async Task<bool> uploadPhoto(RegisterDTO newUser)
+		//{
 			//string res = (await _openAIService.profilePictureFilter(newUser.pozaProfil)).prompt;
 			//if (res != "Yes.")
 			//{
@@ -73,7 +73,7 @@ namespace backend_MT.Services
 			//}
 			//await _s3Service.UploadFileAsync(newUser.username + "_pfp.png", newUser.pozaProfil);
 			//return true;
-		}
+		//}
 		public async Task<IdentityResult> RegisterAsync(RegisterDTO newUser)
 		{
 
@@ -237,16 +237,16 @@ namespace backend_MT.Services
 		public async Task checkRoleUpdates(string username)
 		{
 			var user = await _userManager.FindByNameAsync(username);
-			if (user.permis != "N/A")
-			{
-				await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
-				await _userManager.AddToRoleAsync(user, "Chirias");
-			}
-			else if (user.carteIdentitate != "N/A")
-			{
-				await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
-				await _userManager.AddToRoleAsync(user, "Propietar");
-			}
+			//if (user.permis != "N/A")
+			//{
+			//	await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+			//	await _userManager.AddToRoleAsync(user, "Chirias");
+			//}
+			//else if (user.carteIdentitate != "N/A")
+			//{
+			//	await _userManager.RemoveFromRolesAsync(user, await _userManager.GetRolesAsync(user));
+			//	await _userManager.AddToRoleAsync(user, "Propietar");
+			//}
 		}
 		public async Task<IdentityResult> ChangePasswordAsync(UserChangePassDTO user)
 		{
@@ -264,16 +264,14 @@ namespace backend_MT.Services
 			}
 			var userInfo = new UserDTO
 			{
-				username = u.UserName,
-				email = u.Email,
+				username = u.username,
+				email = u.email,
 				nume = u.nume,
 				prenume = u.prenume,
-				nrTelefon = u.PhoneNumber,
-				permis = u.permis == "N/A" ? false : true,
-				carteIdentitate = u.carteIdentitate == "N/A" ? false : true,
-				dataNasterii = u.dataNasterii,
-				linkPozaProfil = u.pozaProfil,
-				puncteFidelitate = u.puncteFidelitate
+				nrTelefon = u.nrTelefon,
+				nivel = u.nivel,
+				pozaProfil = u.pozaProfil,
+				profesorVerificat = u.profesorVerificat
 			};
 			return userInfo;
 		}
