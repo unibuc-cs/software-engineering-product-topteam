@@ -1,4 +1,4 @@
-﻿namespace backend_MT.Models.DTOs
+﻿namespace backend_MT.Models.DTOs.UserDTOs
 {
 	public class LoginDTO
 	{
