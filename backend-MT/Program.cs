@@ -1,7 +1,7 @@
 using backend_MT.Data;
 using backend_MT.Models;
 using backend_MT.Repositories.CursRepository;
-using backend_MT.Repositories.ElevRepository;
+//using backend_MT.Repositories.ElevRepository;
 using backend_MT.Repositories.FeedbackRepository;
 using backend_MT.Repositories.GrupaRepository;
 using backend_MT.Repositories.MaterialeRepository;
