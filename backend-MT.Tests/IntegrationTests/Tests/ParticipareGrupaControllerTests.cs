@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public ParticipareGrupaControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public ParticipareGrupaControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }

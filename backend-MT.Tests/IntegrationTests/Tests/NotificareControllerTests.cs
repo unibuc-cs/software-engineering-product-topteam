@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class NotificareControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class NotificareControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public NotificareControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public NotificareControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     {
         var newNotification = new Notificare
         {
-            notificareId = 0,
+            notificareId = 99,
             titlu = "Test Notification",
             mesaj = "This is a test notification.",
             data = DateTime.UtcNow,

@@ -8,11 +8,11 @@ using backend_MT.Models; // Adjust namespace
 using FluentAssertions;
 using Xunit;
 
-public class CursControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class CursControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public CursControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public CursControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -70,7 +70,7 @@ public class CursControllerTests : IClassFixture<CustomWebApplicationFactory<Sta
         // Arrange
         var newCourse = new Curs
         {
-            cursId = 0, // Will be assigned by the DB
+            cursId = 99, // Will be assigned by the DB
             denumire = "Test Course",
             descriere = "This is a test course.",
             nrSedinte = 10,

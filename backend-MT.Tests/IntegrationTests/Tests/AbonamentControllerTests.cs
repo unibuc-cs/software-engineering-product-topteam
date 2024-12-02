@@ -8,11 +8,11 @@ using backend_MT.Models; // Adjust namespace
 using FluentAssertions;
 using Xunit;
 
-public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public AbonamentControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public AbonamentControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -70,7 +70,7 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
         // Arrange
         var newSubscription = new Abonament
         {
-            abonamentId = 0, // Will be assigned by the DB
+            abonamentId = 99, // Will be assigned by the DB
             userId = 1, // Assuming user with ID 1 exists in seed data
             cursId = 1 // Assuming curs with ID 1 exists in seed data
         };

@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class TemaControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class TemaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public TemaControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public TemaControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class TemaControllerTests : IClassFixture<CustomWebApplicationFactory<Sta
     {
         var newAssignment = new Tema
         {
-            temaId = 0,
+            temaId = 99,
             titlu = "New Assignment",
             descriere = "This is a new assignment.",
             fisier = "assignment.pdf",

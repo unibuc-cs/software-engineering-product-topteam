@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public PlataControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public PlataControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }

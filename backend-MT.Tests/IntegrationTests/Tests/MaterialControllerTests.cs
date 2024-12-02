@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public MaterialControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public MaterialControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         var newMaterial = new Material
         {
-            materialId = 0,
+            materialId = 99,
             titlu = "Test Material",
             descriere = "This is a test material.",
             userId = 1 // Assuming user with ID 1 exists

@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class PrezentaControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class PrezentaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public PrezentaControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public PrezentaControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class PrezentaControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         var newPrezenta = new Prezenta
         {
-            prezentaId = 0,
+            prezentaId = 99,
             userId = 1, // Assuming UserId 1 exists in seed data
             sedintaId = 1 // Assuming SedintaId 1 exists in seed data
         };

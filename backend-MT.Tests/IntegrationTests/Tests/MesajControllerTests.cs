@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public MesajControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public MesajControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory<St
     {
         var newMessage = new Mesaj
         {
-            mesajId = 0,
+            mesajId = 99,
             mesajText = "This is a test message.",
             tipMesaj = "Privat",
             emitatorId = 1,

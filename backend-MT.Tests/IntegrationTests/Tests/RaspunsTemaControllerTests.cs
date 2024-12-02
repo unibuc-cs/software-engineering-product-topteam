@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public RaspunsTemaControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public RaspunsTemaControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }

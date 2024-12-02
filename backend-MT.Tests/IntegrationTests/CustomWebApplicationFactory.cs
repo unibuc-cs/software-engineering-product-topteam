@@ -1,140 +1,269 @@
-namespace backend_MT.Tests.IntegrationTests;
+using Microsoft.VisualStudio.TestPlatform.TestHost;
+
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Data.Sqlite;
 using System;
+using System.Data.Common;
 using System.Linq;
 using backend_MT.Data; 
 using backend_MT.Models;
+using Microsoft.AspNetCore.Authentication;
 
-public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<TStartup> where TStartup : class
+namespace backend_MT.Tests.IntegrationTests
 {
-    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
-        builder.ConfigureServices(services =>
+        protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
-            // Remove the existing DbContext registration
-            var descriptor = services.SingleOrDefault(
-                d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
-            if (descriptor != null)
+            builder.ConfigureServices(services =>
             {
-                services.Remove(descriptor);
-            }
+                services.AddControllersWithViews();
+                
+                // Remove existing DbContext configuration
+                var descriptors = services
+                    .Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>))
+                    .ToList();
 
-            // Register an in-memory database for testing
-            services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseInMemoryDatabase("TestDatabase"));
+                foreach (var descriptor in descriptors)
+                {
+                    services.Remove(descriptor);
+                }
 
-            // Build the service provider
-            var serviceProvider = services.BuildServiceProvider();
+                // Add InMemoryDatabase for testing
+                services.AddDbContext<ApplicationDbContext>(options =>
+                    options.UseInMemoryDatabase(Guid.NewGuid().ToString())); // Unique DB name
 
-            // Create a new scope for seeding the database
-            using (var scope = serviceProvider.CreateScope())
-            {
-                var scopedServices = scope.ServiceProvider;
-                var db = scopedServices.GetRequiredService<ApplicationDbContext>();
+                // Add mock authentication
+                services.AddAuthentication("Test")
+                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
+                services.AddAuthorization();
 
-                // Ensure the database is created
+                // Build service provider and seed database
+                var sp = services.BuildServiceProvider();
+                using var scope = sp.CreateScope();
+                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 db.Database.EnsureCreated();
-
-                // Seed the database with test data
                 SeedDatabase(db);
-            }
-        });
-    }
+            });
+        }
 
-    private void SeedDatabase(ApplicationDbContext db)
-    {
-        // Seed Users
-        db.Users.AddRange(
-            new User { userId = 1, userName = "User1" },
-            new User { userId = 2, userName = "User2" }
-        );
 
-        // Seed Grupa
-        db.Grupa.AddRange(
-            new Grupa { grupaId = 1, numeGrupa = "Grupa A" },
-            new Grupa { grupaId = 2, numeGrupa = "Grupa B" }
-        );
+        
+        private void SeedDatabase(ApplicationDbContext db)
+        {
+            // Clear existing data
+            db.prezenta.RemoveRange(db.prezenta);
+            db.user.RemoveRange(db.user);
+            db.grupa.RemoveRange(db.grupa);
+            db.feedback.RemoveRange(db.feedback);
+            db.tema.RemoveRange(db.tema);
+            db.raspunsTema.RemoveRange(db.raspunsTema);
+            db.sedinta.RemoveRange(db.sedinta);
+            db.abonament.RemoveRange(db.abonament);
+            db.curs.RemoveRange(db.curs);
+            db.material.RemoveRange(db.material);
+            db.support.RemoveRange(db.support);
+            db.notificare.RemoveRange(db.notificare);
+            db.mesaj.RemoveRange(db.mesaj);
+            db.predare.RemoveRange(db.predare);
+            db.participareGrupa.RemoveRange(db.participareGrupa);
+            db.disponibilitate.RemoveRange(db.disponibilitate);
 
-        // Seed Tema
-        db.Tema.AddRange(
-            new Tema { temaId = 1, titlu = "Tema 1", descriere = "Descriere 1", fisier = "file1.pdf", userId = 1 },
-            new Tema { temaId = 2, titlu = "Tema 2", descriere = "Descriere 2", fisier = "file2.pdf", userId = 2 }
-        );
+            db.SaveChanges();
+            
+            // Seed Users with all required properties populated
+            db.user.AddRange(
+                new User
+                {
+                    userId = 1,
+                    username = "User1",
+                    email = "user1@example.com",
+                    nrTelefon = "1234567890",
+                    nume = "Doe",
+                    prenume = "John",
+                    pozaProfil = "profile1.jpg" // Replace with a valid file path or URL if needed
+                },
+                new User
+                {
+                    userId = 2,
+                    username = "User2",
+                    email = "user2@example.com",
+                    nrTelefon = "0987654321",
+                    nume = "Smith",
+                    prenume = "Jane",
+                    pozaProfil = "profile2.jpg"
+                }
+            );
 
-        // Seed RaspunsTema
-        db.RaspunsTema.AddRange(
-            new RaspunsTema { raspunsTemaId = 1, fisier = "response1.pdf", punctaj = 80, temaId = 1, userId = 1 },
-            new RaspunsTema { raspunsTemaId = 2, fisier = "response2.pdf", punctaj = 90, temaId = 2, userId = 2 }
-        );
+            // Seed Grupa
+            db.grupa.AddRange(
+                new Grupa
+                {
+                    grupaId = 1,
+                    nume = "Grupa A",
+                    nivelStudiu = "Incepator",
+                    linkMeet = "https://meet.example.com/grupa-a",
+                    userId = 1,
+                    cursId = 1
+                },
+                new Grupa
+                {
+                    grupaId = 2,
+                    nume = "Grupa B",
+                    nivelStudiu = "Avansat",
+                    linkMeet = "https://meet.example.com/grupa-b",
+                    userId = 2,
+                    cursId = 2
+                }
+            );
 
-        // Seed Sedinta
-        db.Sedinta.AddRange(
-            new Sedinta
-            {
-                sedintaId = 1,
-                titlu = "Sedinta 1",
-                zi = DateTime.Now,
-                oraIncepere = DateTime.Now.AddHours(1),
-                oraIncheiere = DateTime.Now.AddHours(2),
-                grupaId = 1
-            },
-            new Sedinta
-            {
-                sedintaId = 2,
-                titlu = "Sedinta 2",
-                zi = DateTime.Now.AddDays(1),
-                oraIncepere = DateTime.Now.AddHours(3),
-                oraIncheiere = DateTime.Now.AddHours(4),
-                grupaId = 2
-            }
-        );
+            // Seed Feedback
+            db.feedback.AddRange(
+                new Feedback
+                {
+                    feedbackId = 1,
+                    mesaj = "Great session!",
+                    sedintaId = 1,
+                    userId = 1
+                },
+                new Feedback
+                {
+                    feedbackId = 2,
+                    mesaj = "Very informative.",
+                    sedintaId = 2,
+                    userId = 2
+                }
+            );
 
-        // Seed Abonament
-        db.Abonament.AddRange(
-            new Abonament { abonamentId = 1, userId = 1, cursId = 1 },
-            new Abonament { abonamentId = 2, userId = 2, cursId = 2 }
-        );
+            // Seed Tema
+            db.tema.AddRange(
+                new Tema { temaId = 1, titlu = "Tema 1", descriere = "Descriere 1", fisier = "file1.pdf", userId = 1 },
+                new Tema { temaId = 2, titlu = "Tema 2", descriere = "Descriere 2", fisier = "file2.pdf", userId = 2 }
+            );
 
-        // Seed Curs
-        db.Curs.AddRange(
-            new Curs { cursId = 1, denumire = "Curs A", descriere = "Descriere A", nrSedinte = 10, pret = 200 },
-            new Curs { cursId = 2, denumire = "Curs B", descriere = "Descriere B", nrSedinte = 15, pret = 300 }
-        );
+            // Seed RaspunsTema
+            db.raspunsTema.AddRange(
+                new RaspunsTema { raspunsTemaId = 1, fisier = "response1.pdf", punctaj = 80, temaId = 1, userId = 1 },
+                new RaspunsTema { raspunsTemaId = 2, fisier = "response2.pdf", punctaj = 90, temaId = 2, userId = 2 }
+            );
 
-        // Seed Support
-        db.Support.AddRange(
-            new Support { supportId = 1, mesaj = "Support message 1", userId = 1 },
-            new Support { supportId = 2, mesaj = "Support message 2", userId = 2 }
-        );
+            // Seed Sedinta
+            db.sedinta.AddRange(
+                new Sedinta
+                {
+                    sedintaId = 1,
+                    titlu = "Sedinta 1",
+                    zi = DateTime.Now,
+                    oraIncepere = DateTime.Now.AddHours(1),
+                    oraIncheiere = DateTime.Now.AddHours(2),
+                    grupaId = 1
+                },
+                new Sedinta
+                {
+                    sedintaId = 2,
+                    titlu = "Sedinta 2",
+                    zi = DateTime.Now.AddDays(1),
+                    oraIncepere = DateTime.Now.AddHours(3),
+                    oraIncheiere = DateTime.Now.AddHours(4),
+                    grupaId = 2
+                }
+            );
 
-        // Seed Notificare
-        db.Notificare.AddRange(
-            new Notificare
-            {
-                notificareId = 1,
-                titlu = "Notification 1",
-                mesaj = "Message 1",
-                data = DateTime.Now,
-                tipNotificare = "General",
-                receptorId = 1
-            },
-            new Notificare
-            {
-                notificareId = 2,
-                titlu = "Notification 2",
-                mesaj = "Message 2",
-                data = DateTime.Now.AddDays(1),
-                tipNotificare = "Important",
-                receptorId = 2
-            }
-        );
+            // Seed Abonament
+            db.abonament.AddRange(
+                new Abonament { abonamentId = 1, userId = 1, cursId = 1 },
+                new Abonament { abonamentId = 2, userId = 2, cursId = 2 }
+            );
 
-        // Add other entities here as needed...
+            // Seed Curs
+            db.curs.AddRange(
+                new Curs { cursId = 1, denumire = "Curs A", descriere = "Descriere A", nrSedinte = 10, pret = 200 },
+                new Curs { cursId = 2, denumire = "Curs B", descriere = "Descriere B", nrSedinte = 15, pret = 300 }
+            );
 
-        db.SaveChanges();
+            // Seed Material
+            db.material.AddRange(
+                new Material { materialId = 1, titlu = "Material 1", descriere = "Descriere Material 1", userId = 1 },
+                new Material { materialId = 2, titlu = "Material 2", descriere = "Descriere Material 2", userId = 2 }
+            );
+
+            // Seed Support
+            db.support.AddRange(
+                new Support { supportId = 1, mesaj = "Support message 1", userId = 1 },
+                new Support { supportId = 2, mesaj = "Support message 2", userId = 2 }
+            );
+
+            // Seed Notificare
+            db.notificare.AddRange(
+                new Notificare
+                {
+                    notificareId = 1,
+                    titlu = "Notification 1",
+                    mesaj = "Message 1",
+                    data = DateTime.Now,
+                    tipNotificare = "General",
+                    receptorId = 1
+                },
+                new Notificare
+                {
+                    notificareId = 2,
+                    titlu = "Notification 2",
+                    mesaj = "Message 2",
+                    data = DateTime.Now.AddDays(1),
+                    tipNotificare = "Important",
+                    receptorId = 2
+                }
+            );
+
+            // Seed Mesaj
+            db.mesaj.AddRange(
+                new Mesaj { mesajId = 1, mesajText = "Mesaj 1", tipMesaj = "Privat", emitatorId = 1, receptorId = 2 },
+                new Mesaj { mesajId = 2, mesajText = "Mesaj 2", tipMesaj = "Grup", emitatorId = 2, receptorId = 1 }
+            );
+
+            // Seed Prezenta
+            db.prezenta.AddRange(
+                new Prezenta { prezentaId = 1, userId = 1, sedintaId = 1 },
+                new Prezenta { prezentaId = 2, userId = 2, sedintaId = 2 }
+            );
+
+            // Seed Predare
+            db.predare.AddRange(
+                new Predare { predareId = 1, userId = 1, cursId = 1 },
+                new Predare { predareId = 2, userId = 2, cursId = 2 }
+            );
+
+            // Seed ParticipareGrupa
+            db.participareGrupa.AddRange(
+                new ParticipareGrupa { participareGrupaId = 1, userId = 1, grupaId = 1 },
+                new ParticipareGrupa { participareGrupaId = 2, userId = 2, grupaId = 2 }
+            );
+
+            // Seed Disponibilitate
+            db.disponibilitate.AddRange(
+                new Disponibilitate
+                {
+                    disponibilitateId = 1,
+                    zi = DayOfWeek.Monday,
+                    oraIncepere = new TimeSpan(9, 0, 0),
+                    userId = 1
+                },
+                new Disponibilitate
+                {
+                    disponibilitateId = 2,
+                    zi = DayOfWeek.Tuesday,
+                    oraIncepere = new TimeSpan(10, 0, 0),
+                    userId = 2
+                }
+            );
+
+            db.SaveChanges();
+        }
+
+
     }
 }

@@ -8,11 +8,11 @@ using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
 
-public class DisponibilitateControllerTests : IClassFixture<CustomWebApplicationFactory<Startup>>
+public class DisponibilitateControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
 
-    public DisponibilitateControllerTests(CustomWebApplicationFactory<Startup> factory)
+    public DisponibilitateControllerTests(CustomWebApplicationFactory factory)
     {
         _client = factory.CreateClient();
     }
@@ -56,7 +56,7 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     {
         var newDisponibilitate = new Disponibilitate
         {
-            disponibilitateId = 0,
+            disponibilitateId = 99,
             zi = DayOfWeek.Monday,
             oraIncepere = new TimeSpan(9, 0, 0),
             userId = 1 // Assuming user with ID 1 exists
