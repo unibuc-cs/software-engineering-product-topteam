@@ -29,6 +29,8 @@ namespace backend_MT.Tests.IntegrationTests
 
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
+            builder.UseEnvironment("Test");
+            
             builder.ConfigureServices(services =>
             {
                 // Remove the existing DbContext registration
