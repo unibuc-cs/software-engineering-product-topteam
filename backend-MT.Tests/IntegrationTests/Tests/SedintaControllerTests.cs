@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public SedintaControllerTests(CustomWebApplicationFactory factory)
+    public SedintaControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method to log error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all sessions
@@ -22,6 +35,10 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetAllSessions_ReturnsOk_WithListOfSessions()
     {
         var response = await _client.GetAsync("/api/sedinta");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var sessions = await response.Content.ReadFromJsonAsync<List<Sedinta>>();
@@ -33,8 +50,12 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task GetSessionById_ExistingId_ReturnsOk_WithSession()
     {
-        var testId = 1;
+        var testId = 1; // Assuming this ID exists
         var response = await _client.GetAsync($"/api/sedinta/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var session = await response.Content.ReadFromJsonAsync<Sedinta>();
@@ -46,7 +67,12 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task GetSessionById_NonExistentId_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/sedinta/99999");
+        var nonExistentId = 99999;
+        var response = await _client.GetAsync($"/api/sedinta/{nonExistentId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -65,6 +91,10 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PostAsJsonAsync("/api/sedinta", newSession);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdSession = await response.Content.ReadFromJsonAsync<Sedinta>();
@@ -80,7 +110,7 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var updatedSession = new Sedinta
         {
-            sedintaId = 1,
+            sedintaId = 1,  // Assuming this ID exists
             titlu = "Updated Session",
             zi = DateTime.UtcNow.Date,
             oraIncepere = DateTime.UtcNow.AddHours(1),
@@ -89,6 +119,10 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync($"/api/sedinta/{updatedSession.sedintaId}", updatedSession);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -107,6 +141,10 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync("/api/sedinta/99999", updatedSession);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -114,8 +152,12 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task DeleteSession_ExistingId_ReturnsNoContent()
     {
-        var testId = 1;
+        var testId = 1; // Assuming this ID exists
         var response = await _client.DeleteAsync($"/api/sedinta/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/sedinta/{testId}");
@@ -126,7 +168,12 @@ public class SedintaControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task DeleteSession_NonExistentId_ReturnsNotFound()
     {
-        var response = await _client.DeleteAsync("/api/sedinta/99999");
+        var nonExistentId = 99999;
+        var response = await _client.DeleteAsync($"/api/sedinta/{nonExistentId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

@@ -1,20 +1,23 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
-using backend_MT.Models; // Adjust namespace
+using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _testOutputHelper;
 
-    public AbonamentControllerTests(CustomWebApplicationFactory factory)
+    public AbonamentControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
     {
         _client = factory.CreateClient();
+        _testOutputHelper = testOutputHelper;
     }
 
     // Test: Get all subscriptions
@@ -23,6 +26,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
     {
         // Act
         var response = await _client.GetAsync("/api/abonament");
+
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
@@ -42,6 +52,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
         // Act
         var response = await _client.GetAsync($"/api/abonament/{testId}");
 
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
@@ -58,6 +75,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
     {
         // Act
         var response = await _client.GetAsync("/api/abonament/99999");
+
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
@@ -77,6 +101,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
 
         // Act
         var response = await _client.PostAsJsonAsync("/api/abonament", newSubscription);
+
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.Created);
@@ -102,6 +133,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
         // Act
         var response = await _client.PutAsJsonAsync($"/api/abonament/{updatedSubscription.abonamentId}", updatedSubscription);
 
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
+
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
@@ -115,6 +153,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
 
         // Act
         var response = await _client.DeleteAsync($"/api/abonament/{testId}");
+
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
@@ -130,6 +175,13 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
     {
         // Act
         var response = await _client.DeleteAsync("/api/abonament/99999");
+
+        // Log error if the response is not successful
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
 
         // Assert
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);

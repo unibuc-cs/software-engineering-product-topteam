@@ -39,11 +39,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add controllers
 builder.Services.AddControllers();
-
-// Conditional database registration based on environment
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseInMemoryDatabase(Guid.NewGuid().ToString()));
-
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -92,6 +87,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+app.UseRouting();
+app.UseEndpoints(endpoints =>
+{
+    endpoints.MapControllers(); // Ensures the controllers are mapped correctly.
+});
 
 app.UseHttpsRedirection();
 app.UseAuthentication();

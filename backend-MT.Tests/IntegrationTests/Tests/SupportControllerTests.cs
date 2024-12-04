@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public SupportControllerTests(CustomWebApplicationFactory factory)
+    public SupportControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method to log error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all support messages
@@ -22,6 +35,10 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetAllSupportMessages_ReturnsOk_WithListOfSupportMessages()
     {
         var response = await _client.GetAsync("/api/support");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var messages = await response.Content.ReadFromJsonAsync<List<Support>>();
@@ -33,8 +50,12 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task GetSupportMessageById_ExistingId_ReturnsOk_WithSupportMessage()
     {
-        var testId = 1;
+        var testId = 1; // Assuming this ID exists
         var response = await _client.GetAsync($"/api/support/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var message = await response.Content.ReadFromJsonAsync<Support>();
@@ -46,7 +67,12 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task GetSupportMessageById_NonExistentId_ReturnsNotFound()
     {
-        var response = await _client.GetAsync("/api/support/99999");
+        var nonExistentId = 99999;
+        var response = await _client.GetAsync($"/api/support/{nonExistentId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -62,6 +88,10 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PostAsJsonAsync("/api/support", newMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdMessage = await response.Content.ReadFromJsonAsync<Support>();
@@ -76,12 +106,16 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var updatedMessage = new Support
         {
-            supportId = 1, // Ensure this ID exists in seed data
+            supportId = 1,  // Ensure this ID exists in seed data
             mesaj = "Updated support message content.",
             userId = 1
         };
 
         var response = await _client.PutAsJsonAsync($"/api/support/{updatedMessage.supportId}", updatedMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -97,6 +131,10 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync("/api/support/99999", updatedMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -104,8 +142,12 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task DeleteSupportMessage_ExistingId_ReturnsNoContent()
     {
-        var testId = 1;
+        var testId = 1; // Assuming this ID exists
         var response = await _client.DeleteAsync($"/api/support/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/support/{testId}");
@@ -116,7 +158,12 @@ public class SupportControllerTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task DeleteSupportMessage_NonExistentId_ReturnsNotFound()
     {
-        var response = await _client.DeleteAsync("/api/support/99999");
+        var nonExistentId = 99999;
+        var response = await _client.DeleteAsync($"/api/support/{nonExistentId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

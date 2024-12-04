@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public PlataControllerTests(CustomWebApplicationFactory factory)
+    public PlataControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all payments
@@ -22,6 +35,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetAllPayments_ReturnsOk_WithListOfPayments()
     {
         var response = await _client.GetAsync("/api/plata");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var payments = await response.Content.ReadFromJsonAsync<List<Plata>>();
@@ -35,6 +52,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/plata/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var payment = await response.Content.ReadFromJsonAsync<Plata>();
@@ -47,6 +68,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetPaymentById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/plata/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -64,6 +89,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PostAsJsonAsync("/api/plata", newPayment);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdPayment = await response.Content.ReadFromJsonAsync<Plata>();
@@ -87,6 +116,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync($"/api/plata/{updatedPayment.plataId}", updatedPayment);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -104,6 +137,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync("/api/plata/99999", updatedPayment);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -113,6 +150,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/plata/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/plata/{testId}");
@@ -124,6 +165,10 @@ public class PlataControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task DeletePayment_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/plata/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

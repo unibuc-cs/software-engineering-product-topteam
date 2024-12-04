@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public PredareControllerTests(CustomWebApplicationFactory factory)
+    public PredareControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all predari
@@ -22,6 +35,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetAllPredari_ReturnsOk_WithListOfPredari()
     {
         var response = await _client.GetAsync("/api/predare");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var predari = await response.Content.ReadFromJsonAsync<List<Predare>>();
@@ -35,6 +52,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/predare/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var predare = await response.Content.ReadFromJsonAsync<Predare>();
@@ -47,6 +68,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetPredareById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/predare/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -62,6 +87,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PostAsJsonAsync("/api/predare", newPredare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdPredare = await response.Content.ReadFromJsonAsync<Predare>();
@@ -82,6 +111,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync($"/api/predare/{updatedPredare.predareId}", updatedPredare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -97,6 +130,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync("/api/predare/99999", updatedPredare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -106,6 +143,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/predare/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/predare/{testId}");
@@ -117,6 +158,10 @@ public class PredareControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task DeletePredare_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/predare/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

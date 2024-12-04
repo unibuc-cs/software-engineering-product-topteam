@@ -1,5 +1,6 @@
 using Microsoft.VisualStudio.TestPlatform.TestHost;
 
+using System.Text.Json.Serialization;
 
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -12,46 +13,62 @@ using System.Linq;
 using backend_MT.Data; 
 using backend_MT.Models;
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Logging;
 
 namespace backend_MT.Tests.IntegrationTests
 {
-    public class CustomWebApplicationFactory : WebApplicationFactory<Program>
+   public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
+        private readonly string _databaseName;
+
+        public CustomWebApplicationFactory()
+        {
+            // Generate a unique database name for each factory instance
+            _databaseName = Guid.NewGuid().ToString();
+        }
+
         protected override void ConfigureWebHost(IWebHostBuilder builder)
         {
             builder.ConfigureServices(services =>
             {
-                services.AddControllersWithViews();
-                
-                // Remove existing DbContext configuration
-                var descriptors = services
-                    .Where(d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>))
-                    .ToList();
-
-                foreach (var descriptor in descriptors)
+                // Remove the existing DbContext registration
+                var descriptor = services.SingleOrDefault(
+                    d => d.ServiceType == typeof(DbContextOptions<ApplicationDbContext>));
+                if (descriptor != null)
                 {
                     services.Remove(descriptor);
                 }
 
-                // Add InMemoryDatabase for testing
+                // Add in-memory database with the unique name
                 services.AddDbContext<ApplicationDbContext>(options =>
-                    options.UseInMemoryDatabase(Guid.NewGuid().ToString())); // Unique DB name
+                    options.UseInMemoryDatabase(_databaseName));
 
-                // Add mock authentication
-                services.AddAuthentication("Test")
-                    .AddScheme<AuthenticationSchemeOptions, TestAuthHandler>("Test", options => { });
-                services.AddAuthorization();
+                // Add controllers with JSON options to ignore cycles
+                services.AddControllers().AddJsonOptions(x =>
+                    x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
 
-                // Build service provider and seed database
-                var sp = services.BuildServiceProvider();
-                using var scope = sp.CreateScope();
-                var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                db.Database.EnsureCreated();
-                SeedDatabase(db);
+                // Build the service provider
+                var serviceProvider = services.BuildServiceProvider();  
+
+                // Create a scope to get a reference to the database context
+                using (var scope = serviceProvider.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+
+                    // Ensure the database is created
+                    dbContext.Database.EnsureCreated();
+
+                    // Seed the database
+                    SeedDatabase(dbContext);
+                }
+            });
+
+            builder.ConfigureLogging(logging =>
+            {
+                logging.ClearProviders();
+                logging.AddConsole(); // Outputs logs to the test output
             });
         }
-
-
         
         private void SeedDatabase(ApplicationDbContext db)
         {

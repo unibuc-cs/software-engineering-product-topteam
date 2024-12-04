@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public ParticipareGrupaControllerTests(CustomWebApplicationFactory factory)
+    public ParticipareGrupaControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all participari
@@ -22,6 +35,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
     public async Task GetAllParticipari_ReturnsOk_WithListOfParticipari()
     {
         var response = await _client.GetAsync("/api/participaregrupa");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var participari = await response.Content.ReadFromJsonAsync<List<ParticipareGrupa>>();
@@ -35,6 +52,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/participaregrupa/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var participare = await response.Content.ReadFromJsonAsync<ParticipareGrupa>();
@@ -47,6 +68,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
     public async Task GetParticipareById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/participaregrupa/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -62,6 +87,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
         };
 
         var response = await _client.PostAsJsonAsync("/api/participaregrupa", newParticipare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdParticipare = await response.Content.ReadFromJsonAsync<ParticipareGrupa>();
@@ -82,6 +111,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
         };
 
         var response = await _client.PutAsJsonAsync($"/api/participaregrupa/{updatedParticipare.participareGrupaId}", updatedParticipare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -97,6 +130,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
         };
 
         var response = await _client.PutAsJsonAsync("/api/participaregrupa/99999", updatedParticipare);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -106,6 +143,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/participaregrupa/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/participaregrupa/{testId}");
@@ -117,6 +158,10 @@ public class ParticipareGrupaControllerTests : IClassFixture<CustomWebApplicatio
     public async Task DeleteParticipare_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/participaregrupa/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

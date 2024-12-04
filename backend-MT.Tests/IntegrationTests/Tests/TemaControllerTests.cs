@@ -1,4 +1,6 @@
-namespace backend_MT.Tests.IntegrationTests;
+using Xunit.Abstractions;
+
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -11,6 +13,7 @@ using Xunit;
 public class TemaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _testOutputHelper;
 
     public TemaControllerTests(CustomWebApplicationFactory factory)
     {
@@ -88,8 +91,16 @@ public class TemaControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync($"/api/tema/{updatedAssignment.temaId}", updatedAssignment);
+    
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _testOutputHelper.WriteLine($"Error Response: {errorContent}");
+        }
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
+
 
     // Test: Update assignment with mismatched ID
     [Fact]

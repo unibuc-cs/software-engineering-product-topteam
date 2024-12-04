@@ -1,4 +1,6 @@
-namespace backend_MT.Tests.IntegrationTests;
+using Xunit.Abstractions;
+
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -11,10 +13,22 @@ using Xunit;
 public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public MesajControllerTests(CustomWebApplicationFactory factory)
+    public MesajControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all messages
@@ -22,6 +36,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetAllMessages_ReturnsOk_WithListOfMessages()
     {
         var response = await _client.GetAsync("/api/mesaj");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var messages = await response.Content.ReadFromJsonAsync<List<Mesaj>>();
@@ -35,6 +53,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/mesaj/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var message = await response.Content.ReadFromJsonAsync<Mesaj>();
@@ -47,6 +69,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task GetMessageById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/mesaj/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -64,6 +90,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PostAsJsonAsync("/api/mesaj", newMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdMessage = await response.Content.ReadFromJsonAsync<Mesaj>();
@@ -88,6 +118,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync($"/api/mesaj/{updatedMessage.mesajId}", updatedMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -105,6 +139,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
         };
 
         var response = await _client.PutAsJsonAsync("/api/mesaj/99999", updatedMessage);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -114,6 +152,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/mesaj/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/mesaj/{testId}");
@@ -125,6 +167,10 @@ public class MesajControllerTests : IClassFixture<CustomWebApplicationFactory>
     public async Task DeleteMessage_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/mesaj/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

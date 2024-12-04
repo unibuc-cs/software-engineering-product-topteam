@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public RaspunsTemaControllerTests(CustomWebApplicationFactory factory)
+    public RaspunsTemaControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method to log error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all responses
@@ -22,6 +35,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
     public async Task GetAllResponses_ReturnsOk_WithListOfResponses()
     {
         var response = await _client.GetAsync("/api/raspunsTema");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var responses = await response.Content.ReadFromJsonAsync<List<RaspunsTema>>();
@@ -35,6 +52,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/raspunsTema/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var responseItem = await response.Content.ReadFromJsonAsync<RaspunsTema>();
@@ -47,6 +68,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
     public async Task GetResponseById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/raspunsTema/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -64,6 +89,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
         };
 
         var response = await _client.PostAsJsonAsync("/api/raspunsTema", newResponse);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdResponse = await response.Content.ReadFromJsonAsync<RaspunsTema>();
@@ -88,6 +117,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
         };
 
         var response = await _client.PutAsJsonAsync($"/api/raspunsTema/{updatedResponse.raspunsTemaId}", updatedResponse);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -105,6 +138,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
         };
 
         var response = await _client.PutAsJsonAsync("/api/raspunsTema/99999", updatedResponse);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -114,6 +151,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/raspunsTema/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/raspunsTema/{testId}");
@@ -125,6 +166,10 @@ public class RaspunsTemaControllerTests : IClassFixture<CustomWebApplicationFact
     public async Task DeleteResponse_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/raspunsTema/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

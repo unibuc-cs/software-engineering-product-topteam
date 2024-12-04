@@ -1,5 +1,6 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
+using Xunit.Abstractions;
 using System.Collections.Generic;
 using System.Net;
 using System.Net.Http.Json;
@@ -11,10 +12,22 @@ using Xunit;
 public class DisponibilitateControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public DisponibilitateControllerTests(CustomWebApplicationFactory factory)
+    public DisponibilitateControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all disponibilitati
@@ -22,6 +35,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     public async Task GetAllDisponibilitati_ReturnsOk_WithListOfDisponibilitati()
     {
         var response = await _client.GetAsync("/api/disponibilitate");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var disponibilitati = await response.Content.ReadFromJsonAsync<List<Disponibilitate>>();
@@ -35,6 +52,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/disponibilitate/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var disponibilitate = await response.Content.ReadFromJsonAsync<Disponibilitate>();
@@ -47,6 +68,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     public async Task GetDisponibilitateById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/disponibilitate/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -63,6 +88,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
         };
 
         var response = await _client.PostAsJsonAsync("/api/disponibilitate", newDisponibilitate);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdDisponibilitate = await response.Content.ReadFromJsonAsync<Disponibilitate>();
@@ -85,6 +114,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
         };
 
         var response = await _client.PutAsJsonAsync($"/api/disponibilitate/{updatedDisponibilitate.disponibilitateId}", updatedDisponibilitate);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -101,6 +134,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
         };
 
         var response = await _client.PutAsJsonAsync("/api/disponibilitate/99999", updatedDisponibilitate);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -110,6 +147,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/disponibilitate/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/disponibilitate/{testId}");
@@ -121,6 +162,10 @@ public class DisponibilitateControllerTests : IClassFixture<CustomWebApplication
     public async Task DeleteDisponibilitate_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/disponibilitate/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

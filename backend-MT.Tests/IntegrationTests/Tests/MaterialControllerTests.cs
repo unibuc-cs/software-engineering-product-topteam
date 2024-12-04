@@ -1,4 +1,6 @@
-namespace backend_MT.Tests.IntegrationTests;
+using Xunit.Abstractions;
+
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -11,10 +13,22 @@ using Xunit;
 public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public MaterialControllerTests(CustomWebApplicationFactory factory)
+    public MaterialControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all materials
@@ -22,6 +36,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     public async Task GetAllMaterials_ReturnsOk_WithListOfMaterials()
     {
         var response = await _client.GetAsync("/api/material");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var materials = await response.Content.ReadFromJsonAsync<List<Material>>();
@@ -35,6 +53,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/material/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var material = await response.Content.ReadFromJsonAsync<Material>();
@@ -47,6 +69,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     public async Task GetMaterialById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/material/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -63,6 +89,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
         };
 
         var response = await _client.PostAsJsonAsync("/api/material", newMaterial);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdMaterial = await response.Content.ReadFromJsonAsync<Material>();
@@ -85,6 +115,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
         };
 
         var response = await _client.PutAsJsonAsync($"/api/material/{updatedMaterial.materialId}", updatedMaterial);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -101,6 +135,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
         };
 
         var response = await _client.PutAsJsonAsync("/api/material/99999", updatedMaterial);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -110,6 +148,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/material/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/material/{testId}");
@@ -121,6 +163,10 @@ public class MaterialControllerTests : IClassFixture<CustomWebApplicationFactory
     public async Task DeleteMaterial_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/material/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }

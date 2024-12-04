@@ -1,4 +1,4 @@
-namespace backend_MT.Tests.IntegrationTests;
+namespace backend_MT.Tests.IntegrationTests.Tests;
 
 using System.Collections.Generic;
 using System.Net;
@@ -7,14 +7,27 @@ using System.Threading.Tasks;
 using backend_MT.Models;
 using FluentAssertions;
 using Xunit;
+using Xunit.Abstractions;
 
 public class NotificareControllerTests : IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _client;
+    private readonly ITestOutputHelper _output;
 
-    public NotificareControllerTests(CustomWebApplicationFactory factory)
+    public NotificareControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper output)
     {
         _client = factory.CreateClient();
+        _output = output;
+    }
+
+    // Helper method for logging error responses
+    private async Task LogErrorResponse(HttpResponseMessage response)
+    {
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            _output.WriteLine($"Error Response: {errorContent}");
+        }
     }
 
     // Test: Get all notifications
@@ -22,6 +35,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task GetAllNotifications_ReturnsOk_WithListOfNotifications()
     {
         var response = await _client.GetAsync("/api/notificare");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var notifications = await response.Content.ReadFromJsonAsync<List<Notificare>>();
@@ -35,6 +52,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     {
         var testId = 1;
         var response = await _client.GetAsync($"/api/notificare/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.OK);
 
         var notification = await response.Content.ReadFromJsonAsync<Notificare>();
@@ -47,6 +68,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task GetNotificationById_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.GetAsync("/api/notificare/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
@@ -65,6 +90,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
         };
 
         var response = await _client.PostAsJsonAsync("/api/notificare", newNotification);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.Created);
 
         var createdNotification = await response.Content.ReadFromJsonAsync<Notificare>();
@@ -90,6 +119,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
         };
 
         var response = await _client.PutAsJsonAsync($"/api/notificare/{updatedNotification.notificareId}", updatedNotification);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
     }
 
@@ -108,6 +141,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
         };
 
         var response = await _client.PutAsJsonAsync("/api/notificare/99999", updatedNotification);
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.BadRequest);
     }
 
@@ -117,6 +154,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     {
         var testId = 1;
         var response = await _client.DeleteAsync($"/api/notificare/{testId}");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NoContent);
 
         var checkResponse = await _client.GetAsync($"/api/notificare/{testId}");
@@ -128,6 +169,10 @@ public class NotificareControllerTests : IClassFixture<CustomWebApplicationFacto
     public async Task DeleteNotification_NonExistentId_ReturnsNotFound()
     {
         var response = await _client.DeleteAsync("/api/notificare/99999");
+
+        // Log error if the response is not successful
+        await LogErrorResponse(response);
+
         response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 }
