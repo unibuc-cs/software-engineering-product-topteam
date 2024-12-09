@@ -39,8 +39,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register services and repositories
-//builder.Services.AddScoped<ICursService, CursService>();
-//builder.Services.AddScoped<ICursRepository, CursRepository>();
+builder.Services.AddScoped<ICursService, CursService>();
+builder.Services.AddScoped<ICursRepository, CursRepository>();
 //builder.Services.AddScoped<IElevService, ElevService>();
 //builder.Services.AddScoped<IElevRepository, ElevRepository>();
 //builder.Services.AddScoped<IFeedbackService, FeedbackService>();
