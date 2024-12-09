@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styles from "./LoginForm.module.css";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormData {
   email: string;
@@ -13,6 +14,8 @@ const LoginForm: React.FC = () => {
   });
   const [errors, setErrors] = useState<Partial<LoginFormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const navigate = useNavigate();
 
   const validateForm = (): boolean => {
     const newErrors: Partial<LoginFormData> = {};
@@ -46,7 +49,8 @@ const LoginForm: React.FC = () => {
 
     if (validateForm()) {
       console.log("Form submitted:", formData);
-      alert("Login successful (simulation)");
+      alert("Login successful!");
+      navigate("/dashboard");
     }
 
     setIsSubmitting(false);
