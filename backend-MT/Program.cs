@@ -1,7 +1,7 @@
 using backend_MT.Data;
 using backend_MT.Models;
 using backend_MT.Repositories.CursRepository;
-using backend_MT.Repositories.ElevRepository;
+//using backend_MT.Repositories.ElevRepository;
 using backend_MT.Repositories.FeedbackRepository;
 using backend_MT.Repositories.GrupaRepository;
 using backend_MT.Repositories.MaterialeRepository;
@@ -13,7 +13,6 @@ using backend_MT.Repositories.SedintaRepository;
 using backend_MT.Repositories.SupportRepository;
 using backend_MT.Repositories.TemaRepository;
 using backend_MT.Service.CursService;
-using backend_MT.Service.ElevService;
 using backend_MT.Service.FeedbackService;
 using backend_MT.Service.GrupaService;
 using backend_MT.Service.MaterialeService;
@@ -33,15 +32,15 @@ builder.Services.AddControllers();
 
 // Configure Entity Framework Core with SQL Server
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 // Register services and repositories
-//builder.Services.AddScoped<ICursService, CursService>();
-//builder.Services.AddScoped<ICursRepository, CursRepository>();
+builder.Services.AddScoped<ICursService, CursService>();
+builder.Services.AddScoped<ICursRepository, CursRepository>();
 //builder.Services.AddScoped<IElevService, ElevService>();
 //builder.Services.AddScoped<IElevRepository, ElevRepository>();
 //builder.Services.AddScoped<IFeedbackService, FeedbackService>();

@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
@@ -15,11 +16,11 @@ namespace backend_MT.Migrations
                 name: "AspNetRoles",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    Name = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -30,26 +31,30 @@ namespace backend_MT.Migrations
                 name: "AspNetUsers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nume = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    prenume = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nivel = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    pozaProfil = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    Email = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(type: "nvarchar(256)", maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    SecurityStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ConcurrencyStamp = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PhoneNumberConfirmed = table.Column<bool>(type: "bit", nullable: false),
-                    TwoFactorEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(type: "datetimeoffset", nullable: true),
-                    LockoutEnabled = table.Column<bool>(type: "bit", nullable: false),
-                    AccessFailedCount = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nume = table.Column<string>(type: "text", nullable: false),
+                    prenume = table.Column<string>(type: "text", nullable: false),
+                    username = table.Column<string>(type: "text", nullable: false),
+                    nivel = table.Column<string>(type: "text", nullable: true),
+                    pozaProfil = table.Column<string>(type: "text", nullable: false),
+                    email = table.Column<string>(type: "text", nullable: false),
+                    nrTelefon = table.Column<string>(type: "text", nullable: false),
+                    profesorVerificat = table.Column<bool>(type: "boolean", nullable: true),
+                    UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    NormalizedEmail = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    PasswordHash = table.Column<string>(type: "text", nullable: true),
+                    SecurityStamp = table.Column<string>(type: "text", nullable: true),
+                    ConcurrencyStamp = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "text", nullable: true),
+                    PhoneNumberConfirmed = table.Column<bool>(type: "boolean", nullable: false),
+                    TwoFactorEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(type: "timestamp with time zone", nullable: true),
+                    LockoutEnabled = table.Column<bool>(type: "boolean", nullable: false),
+                    AccessFailedCount = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -60,12 +65,12 @@ namespace backend_MT.Migrations
                 name: "curs",
                 columns: table => new
                 {
-                    cursId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    denumire = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    descriere = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nrSedinte = table.Column<int>(type: "int", nullable: false),
-                    pret = table.Column<int>(type: "int", nullable: false)
+                    cursId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    denumire = table.Column<string>(type: "text", nullable: false),
+                    descriere = table.Column<string>(type: "text", nullable: false),
+                    nrSedinte = table.Column<int>(type: "integer", nullable: false),
+                    pret = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -76,11 +81,11 @@ namespace backend_MT.Migrations
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    RoleId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -97,11 +102,11 @@ namespace backend_MT.Migrations
                 name: "AspNetUserClaims",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    ClaimType = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    ClaimValue = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    ClaimType = table.Column<string>(type: "text", nullable: true),
+                    ClaimValue = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -118,10 +123,10 @@ namespace backend_MT.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderKey = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    ProviderDisplayName = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: false)
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    ProviderKey = table.Column<string>(type: "text", nullable: false),
+                    ProviderDisplayName = table.Column<string>(type: "text", nullable: true),
+                    UserId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,8 +143,8 @@ namespace backend_MT.Migrations
                 name: "AspNetUserRoles",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    RoleId = table.Column<int>(type: "int", nullable: false)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    RoleId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -162,10 +167,10 @@ namespace backend_MT.Migrations
                 name: "AspNetUserTokens",
                 columns: table => new
                 {
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    LoginProvider = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<int>(type: "integer", nullable: false),
+                    LoginProvider = table.Column<string>(type: "text", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    Value = table.Column<string>(type: "text", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -179,20 +184,20 @@ namespace backend_MT.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Disponibilitate",
+                name: "disponibilitate",
                 columns: table => new
                 {
-                    disponibilitateId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    zi = table.Column<int>(type: "int", nullable: false),
-                    oraIncepere = table.Column<TimeSpan>(type: "time", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    disponibilitateId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    zi = table.Column<int>(type: "integer", nullable: false),
+                    oraIncepere = table.Column<TimeSpan>(type: "interval", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Disponibilitate", x => x.disponibilitateId);
+                    table.PrimaryKey("PK_disponibilitate", x => x.disponibilitateId);
                     table.ForeignKey(
-                        name: "FK_Disponibilitate_AspNetUsers_userId",
+                        name: "FK_disponibilitate_AspNetUsers_userId",
                         column: x => x.userId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -203,11 +208,11 @@ namespace backend_MT.Migrations
                 name: "material",
                 columns: table => new
                 {
-                    materialId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    titlu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    descriere = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    materialId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    titlu = table.Column<string>(type: "text", nullable: false),
+                    descriere = table.Column<string>(type: "text", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -224,13 +229,13 @@ namespace backend_MT.Migrations
                 name: "mesaj",
                 columns: table => new
                 {
-                    mesajId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    mesajText = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    tipMesaj = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    emitatorId = table.Column<int>(type: "int", nullable: false),
-                    receptorId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    mesajId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mesajText = table.Column<string>(type: "text", nullable: false),
+                    tipMesaj = table.Column<string>(type: "text", nullable: false),
+                    emitatorId = table.Column<int>(type: "integer", nullable: false),
+                    receptorId = table.Column<int>(type: "integer", nullable: false),
+                    UserId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -258,10 +263,10 @@ namespace backend_MT.Migrations
                 name: "support",
                 columns: table => new
                 {
-                    supportId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    mesaj = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    supportId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mesaj = table.Column<string>(type: "text", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,12 +283,12 @@ namespace backend_MT.Migrations
                 name: "tema",
                 columns: table => new
                 {
-                    temaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    titlu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    descriere = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    fisier = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    temaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    titlu = table.Column<string>(type: "text", nullable: false),
+                    descriere = table.Column<string>(type: "text", nullable: false),
+                    fisier = table.Column<string>(type: "text", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -300,10 +305,10 @@ namespace backend_MT.Migrations
                 name: "abonament",
                 columns: table => new
                 {
-                    abonamentId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    cursId = table.Column<int>(type: "int", nullable: false)
+                    abonamentId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    cursId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -326,13 +331,13 @@ namespace backend_MT.Migrations
                 name: "grupa",
                 columns: table => new
                 {
-                    grupaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    nume = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    nivelStudiu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    linkMeet = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    cursId = table.Column<int>(type: "int", nullable: false)
+                    grupaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    nume = table.Column<string>(type: "text", nullable: false),
+                    nivelStudiu = table.Column<string>(type: "text", nullable: false),
+                    linkMeet = table.Column<string>(type: "text", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    cursId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -355,12 +360,12 @@ namespace backend_MT.Migrations
                 name: "plata",
                 columns: table => new
                 {
-                    plataId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    suma = table.Column<int>(type: "int", nullable: false),
-                    data = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    cursId = table.Column<int>(type: "int", nullable: false)
+                    plataId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    suma = table.Column<int>(type: "integer", nullable: false),
+                    data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    cursId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -383,10 +388,10 @@ namespace backend_MT.Migrations
                 name: "predare",
                 columns: table => new
                 {
-                    predareId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    cursId = table.Column<int>(type: "int", nullable: false)
+                    predareId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    cursId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -409,12 +414,12 @@ namespace backend_MT.Migrations
                 name: "raspunsTema",
                 columns: table => new
                 {
-                    raspunsTemaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    fisier = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    punctaj = table.Column<int>(type: "int", nullable: false),
-                    temaId = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    raspunsTemaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    fisier = table.Column<string>(type: "text", nullable: false),
+                    punctaj = table.Column<int>(type: "integer", nullable: false),
+                    temaId = table.Column<int>(type: "integer", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -437,15 +442,15 @@ namespace backend_MT.Migrations
                 name: "notificare",
                 columns: table => new
                 {
-                    notificareId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    titlu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    mesaj = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    data = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    tipNotificare = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    receptorId = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: true),
-                    grupaId = table.Column<int>(type: "int", nullable: true)
+                    notificareId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    titlu = table.Column<string>(type: "text", nullable: false),
+                    mesaj = table.Column<string>(type: "text", nullable: false),
+                    data = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    tipNotificare = table.Column<string>(type: "text", nullable: false),
+                    receptorId = table.Column<int>(type: "integer", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: true),
+                    grupaId = table.Column<int>(type: "integer", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -466,10 +471,10 @@ namespace backend_MT.Migrations
                 name: "participareGrupa",
                 columns: table => new
                 {
-                    participareGrupaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    grupaId = table.Column<int>(type: "int", nullable: false)
+                    participareGrupaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    grupaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -492,13 +497,13 @@ namespace backend_MT.Migrations
                 name: "sedinta",
                 columns: table => new
                 {
-                    sedintaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    titlu = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    zi = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    oraIncepere = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    oraIncheiere = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    grupaId = table.Column<int>(type: "int", nullable: false)
+                    sedintaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    titlu = table.Column<string>(type: "text", nullable: false),
+                    zi = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    oraIncepere = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    oraIncheiere = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    grupaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -515,11 +520,11 @@ namespace backend_MT.Migrations
                 name: "feedback",
                 columns: table => new
                 {
-                    feedbackId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    mesaj = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sedintaId = table.Column<int>(type: "int", nullable: false),
-                    userId = table.Column<int>(type: "int", nullable: false)
+                    feedbackId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    mesaj = table.Column<string>(type: "text", nullable: false),
+                    sedintaId = table.Column<int>(type: "integer", nullable: false),
+                    userId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -542,10 +547,10 @@ namespace backend_MT.Migrations
                 name: "prezenta",
                 columns: table => new
                 {
-                    prezentaId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    userId = table.Column<int>(type: "int", nullable: false),
-                    sedintaId = table.Column<int>(type: "int", nullable: false)
+                    prezentaId = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    userId = table.Column<int>(type: "integer", nullable: false),
+                    sedintaId = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -583,8 +588,7 @@ namespace backend_MT.Migrations
                 name: "RoleNameIndex",
                 table: "AspNetRoles",
                 column: "NormalizedName",
-                unique: true,
-                filter: "[NormalizedName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetUserClaims_UserId",
@@ -610,12 +614,11 @@ namespace backend_MT.Migrations
                 name: "UserNameIndex",
                 table: "AspNetUsers",
                 column: "NormalizedUserName",
-                unique: true,
-                filter: "[NormalizedUserName] IS NOT NULL");
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Disponibilitate_userId",
-                table: "Disponibilitate",
+                name: "IX_disponibilitate_userId",
+                table: "disponibilitate",
                 column: "userId");
 
             migrationBuilder.CreateIndex(
@@ -756,7 +759,7 @@ namespace backend_MT.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Disponibilitate");
+                name: "disponibilitate");
 
             migrationBuilder.DropTable(
                 name: "feedback");
