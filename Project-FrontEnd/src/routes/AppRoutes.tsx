@@ -8,6 +8,7 @@ import CoursesPage from "../pages/CoursesPage";
 import HomeworkPage from "../pages/HomeworkPage";
 import ShopPage from "../pages/ShopPage";
 import DashboardPage from "../pages/DashboardPage";
+import CourseTemplatePage from "../pages/CourseTemplatePage";
 
 const AppRoutes = () => {
   return (
@@ -17,6 +18,7 @@ const AppRoutes = () => {
         <Route path="/" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/login" element={<LoginFormPage />} />
+        <Route path="/shop/:slug" element={<CourseTemplatePage />} />
 
         {/* Rutele care includ Dashboard (navbar-ul rămâne activ) */}
         <Route path="/dashboard" element={<DashboardPage />}>
