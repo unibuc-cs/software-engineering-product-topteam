@@ -1,0 +1,27 @@
+# Ignore the build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Windows installer files
+*.cab
+*.msi
+*.msm
+*.msp
+
+# Windows installer logs
+*.log
+
+# User-specific files (e.g. VSCode)
+.vscode/
+
+# Rider IDE files
+.idea/
+
+# ASP.NET Scaffolding
+ScaffoldingReadMe.txt

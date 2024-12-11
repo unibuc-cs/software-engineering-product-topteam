@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace backend_MT.Models
 {
@@ -9,9 +10,13 @@ namespace backend_MT.Models
         public int userId;
         public string nume { get; set; }
         public string prenume { get; set; }
+        
+        [JsonPropertyName("customUsername")]
         public string username { get; set; }
         public string? nivel { get; set; }
         public string pozaProfil { get; set; }
+        
+        [JsonPropertyName("customEmail")]
         public string email { get; set; }
         public string nrTelefon { get; set; }
         public ICollection<ParticipareGrupa>? participariGrupa { get; set; }
