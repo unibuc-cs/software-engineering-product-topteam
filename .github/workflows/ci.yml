@@ -27,4 +27,4 @@ jobs:
 
     - name: Run Tests in backend-MT.Tests
       working-directory: ./backend-MT.Tests
-      run: dotnet test --no-build --configuration Release --verbosity normal
+      run: dotnet test
