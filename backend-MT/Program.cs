@@ -3,6 +3,7 @@ using backend_MT.Models;
 using backend_MT.Repositories.AbonamentRepository;
 using backend_MT.Repositories.CursRepository;
 using backend_MT.Repositories.DisponibilitateRepository;
+//using backend_MT.Repositories.ElevRepository;
 using backend_MT.Repositories.FeedbackRepository;
 using backend_MT.Repositories.GrupaRepository;
 using backend_MT.Repositories.MaterialeRepository;
@@ -32,20 +33,21 @@ using backend_MT.Service.RaspunsTemaService;
 using backend_MT.Service.SedintaService;
 using backend_MT.Service.SupportService;
 using backend_MT.Service.TemaService;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add controllers
+// Add services to the container.
 builder.Services.AddControllers();
 
-if(!builder.Environment.IsEnvironment("Test"))
+// Configure Entity Framework Core with SQL Server
+if (!builder.Environment.IsEnvironment("Test"))
 {
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+        options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
 
+// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
@@ -89,24 +91,16 @@ builder.Services.AddScoped<IParticipareGrupaService, ParticipareGrupaService>();
 
 var app = builder.Build();
 
+// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
-    
 }
 
-app.UseRouting();
-app.UseEndpoints(endpoints =>
-{
-    endpoints.MapControllers(); // Ensures the controllers are mapped correctly.
-});
-
 app.UseHttpsRedirection();
-app.UseAuthentication();
 app.UseAuthorization();
-
-app.MapControllers(); // This depends on AddControllers being registered
+app.MapControllers();
 
 app.Run();
 
