@@ -13,7 +13,7 @@ public class AbonamentControllerTests : IClassFixture<CustomWebApplicationFactor
 {
     private readonly HttpClient _client;
     private readonly ITestOutputHelper _testOutputHelper;
-
+//dsasadasdaddd
     public AbonamentControllerTests(CustomWebApplicationFactory factory, ITestOutputHelper testOutputHelper)
     {
         _client = factory.CreateClient();
