@@ -34,18 +34,18 @@ namespace backend_MT.Services
 	{
 		private readonly UserManager<User> _userManager;
 		private readonly SignInManager<User> _signInManager;
-		//private readonly IEmailSender _emailSender;
+		private readonly IEmailSender _emailSender;
 		//private readonly IS3Service _s3Service;
 		//private readonly IPostareRepository _postareRepository;
 		//private readonly IOpenAIService _openAIService;
 
 
-		public UserService(UserManager<User> userManager, SignInManager<User> signInManager) /*IOpenAIService openAIService, IS3Service s3Service, IEmailSender emailSender, IPostareRepository postareRepository)*/
+		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IEmailSender emailSender) /*IOpenAIService openAIService, IS3Service s3Service, IPostareRepository postareRepository)*/
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			//_s3Service = s3Service;
-			//_emailSender = emailSender;
+			_emailSender = emailSender;
 			//_postareRepository = postareRepository;
 			//_openAIService = openAIService;
 		}
@@ -126,7 +126,7 @@ namespace backend_MT.Services
 			string emailHtml = await File.ReadAllTextAsync("Templates/ForgotEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{confirmationUrl}}", url);
 			emailHtml = emailHtml.Replace("{{username}}", userByName.UserName);
-			//await _emailSender.SendEmailAsync(userByName.Email, "Resetare parola", emailHtml);
+			await _emailSender.SendEmailAsync(userByName.Email, "Resetare parola", emailHtml);
 		}
 		public async Task sendConfirmationEmail(RegisterDTO newUser)
 		{
@@ -139,14 +139,14 @@ namespace backend_MT.Services
 			string emailHtml = await File.ReadAllTextAsync("Templates/ConfirmationEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{confirmationUrl}}", url);
 			emailHtml = emailHtml.Replace("{{username}}", newUser.username);
-			//await _emailSender.SendEmailAsync(user.Email, "Confirmare email", emailHtml);
+			await _emailSender.SendEmailAsync(user.Email, "Confirmare email", emailHtml);
 		}
 		public async Task failureEmail(RegisterDTO newUser, string reason)
 		{
 			string emailHtml = await File.ReadAllTextAsync("Templates/FailureEmailTemplate.html");
 			emailHtml = emailHtml.Replace("{{username}}", newUser.username);
 			emailHtml = emailHtml.Replace("{{reason}}", reason);
-			//await _emailSender.SendEmailAsync(newUser.email, "Inregistrare esuata", emailHtml);
+			await _emailSender.SendEmailAsync(newUser.email, "Inregistrare esuata", emailHtml);
 		}
 		public async Task<UserDTO> getUserProfile(string username)
 		{
