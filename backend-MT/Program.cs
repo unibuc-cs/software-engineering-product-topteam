@@ -23,6 +23,8 @@ using backend_MT.Service.RaspunsTemaService;
 using backend_MT.Service.SedintaService;
 using backend_MT.Service.SupportService;
 using backend_MT.Service.TemaService;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -41,30 +43,43 @@ builder.Services.AddSwaggerGen();
 // Register services and repositories
 builder.Services.AddScoped<ICursService, CursService>();
 builder.Services.AddScoped<ICursRepository, CursRepository>();
-//builder.Services.AddScoped<IElevService, ElevService>();
-//builder.Services.AddScoped<IElevRepository, ElevRepository>();
-//builder.Services.AddScoped<IFeedbackService, FeedbackService>();
-//builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
-//builder.Services.AddScoped<IGrupaService, GrupaService>();
-//builder.Services.AddScoped<IGrupaRepository, GrupaRepository>();
-//builder.Services.AddScoped<IMaterialService, MaterialService>();
-//builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
-//builder.Services.AddScoped<IMesajService, MesajService>();
-//builder.Services.AddScoped<IMesajRepository, MesajRepository>();
-//builder.Services.AddScoped<INotificareService, NotificareService>();
-//builder.Services.AddScoped<INotificareRepository, NotificareRepository>();
-//builder.Services.AddScoped<IPlataRepository, PlataRepository>();
-//builder.Services.AddScoped<IProfesorRepository, ProfesorRepository>();
-//builder.Services.AddScoped<IPlataService, PlataService>();
-//builder.Services.AddScoped<IProfesorService, ProfesorService>();
-//builder.Services.AddScoped<IRaspunsTemaRepository, RaspunsTemaRepository>();
-//builder.Services.AddScoped<ISedintaRepository, SedintaRepository>();
-//builder.Services.AddScoped<IRaspunsTemaService, RaspunsTemaService>();
-//builder.Services.AddScoped<ISedintaService, SedintaService>();
-//builder.Services.AddScoped<ISupportRepository, SupportRepository>();
-//builder.Services.AddScoped<ITemaRepository, TemaRepository>();
-//builder.Services.AddScoped<ISupportService, SupportService>();
-//builder.Services.AddScoped<ITemaService, TemaService>();
+builder.Services.AddScoped<IFeedbackService, FeedbackService>();
+builder.Services.AddScoped<IFeedbackRepository, FeedbackRepository>();
+builder.Services.AddScoped<IGrupaService, GrupaService>();
+builder.Services.AddScoped<IGrupaRepository, GrupaRepository>();
+builder.Services.AddScoped<IMaterialService, MaterialService>();
+builder.Services.AddScoped<IMaterialRepository, MaterialRepository>();
+builder.Services.AddScoped<IMesajService, MesajService>();
+builder.Services.AddScoped<IMesajRepository, MesajRepository>();
+builder.Services.AddScoped<INotificareService, NotificareService>();
+builder.Services.AddScoped<INotificareRepository, NotificareRepository>();
+builder.Services.AddScoped<IPlataRepository, PlataRepository>();
+builder.Services.AddScoped<IPlataService, PlataService>();
+builder.Services.AddScoped<IRaspunsTemaRepository, RaspunsTemaRepository>();
+builder.Services.AddScoped<IRaspunsTemaService, RaspunsTemaService>();
+builder.Services.AddScoped<ISedintaRepository, SedintaRepository>();
+builder.Services.AddScoped<ISedintaService, SedintaService>();
+builder.Services.AddScoped<ISupportRepository, SupportRepository>();
+builder.Services.AddScoped<ISupportService, SupportService>();
+builder.Services.AddScoped<ITemaRepository, TemaRepository>();
+builder.Services.AddScoped<ITemaService, TemaService>();
+
+
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+{
+	options.Password.RequireDigit = true;
+	options.Password.RequiredLength = 8;
+	options.Password.RequireUppercase = true;
+	options.Password.RequireNonAlphanumeric = true;
+	options.Lockout.MaxFailedAccessAttempts = 5;
+	options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+	options.User.RequireUniqueEmail = true;
+})
+.AddEntityFrameworkStores<ApplicationDbContext>()
+.AddDefaultTokenProviders();
+
+builder.Services.Configure<EmailSettings>(builder.Configuration.GetSection("EmailSettings"));
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 
 var app = builder.Build();
 
