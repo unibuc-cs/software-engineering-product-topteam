@@ -79,8 +79,8 @@ namespace backend_MT.Services
 
 			var user = new User
 			{
-				username = newUser.username,
-				email = newUser.email,
+				UserName = newUser.username,
+				Email = newUser.email,
 				nume = newUser.nume,
 				prenume = newUser.prenume,
 				nrTelefon = newUser.nrTelefon,
@@ -154,8 +154,8 @@ namespace backend_MT.Services
 			//Console.WriteLine(nrPostari);
 			return new UserDTO()
 			{
-				username = u.username,
-				email = u.email,
+				username = u.UserName,
+				email = u.Email,
 				nume = u.nume,
 				prenume = u.prenume,
 				nrTelefon = u.nrTelefon,
@@ -169,8 +169,8 @@ namespace backend_MT.Services
 			var user = await _userManager.FindByNameAsync(username) ?? throw new NotFoundException("Userul nu a fost gasit");
 			var userInfo = new UserDTO
 			{
-				username = user.username,
-				email = user.email,
+				username = user.UserName,
+				email = user.Email,
 				nume = user.nume,
 				prenume = user.prenume,
 				nrTelefon = user.nrTelefon,
@@ -264,8 +264,8 @@ namespace backend_MT.Services
 			}
 			var userInfo = new UserDTO
 			{
-				username = u.username,
-				email = u.email,
+				username = u.UserName,
+				email = u.Email,
 				nume = u.nume,
 				prenume = u.prenume,
 				nrTelefon = u.nrTelefon,

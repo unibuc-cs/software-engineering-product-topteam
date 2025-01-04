@@ -1,131 +1,193 @@
-﻿// using backend_MT.Models;
-// using backend_MT.Service.ElevService;
-// using backend_MT.Service.ProfesorService;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace backend_MT.Controllers
-// {
-//     [Route("api/[controller]")]
-//     [ApiController]
-//     public class UserController : ControllerBase
-//     {
-//         private readonly IElevService _elevService;
-//         private readonly IProfesorService _profesorService;
-//
-//         public UserController(IElevService elevService, IProfesorService profesorService)
-//         {
-//             _elevService = elevService;
-//             _profesorService = profesorService;
-//         }
-//
-//         // GET: api/user/students
-//         [HttpGet("students")]
-//         public async Task<ActionResult<IEnumerable<User>>> GetAllStudents()
-//         {
-//             var students = await _elevService.GetAllStudentsAsync();
-//             return Ok(students);
-//         }
-//
-//         // GET: api/user/teachers
-//         [HttpGet("teachers")]
-//         public async Task<ActionResult<IEnumerable<User>>> GetAllTeachers()
-//         {
-//             var teachers = await _profesorService.GetAllTeachersAsync();
-//             return Ok(teachers);
-//         }
-//
-//         // GET: api/user/students/{id}
-//         [HttpGet("students/{id}")]
-//         public async Task<ActionResult<User>> GetStudentById(string id)
-//         {
-//             var student = await _elevService.GetStudentByIdAsync(id);
-//             if (student == null)
-//             {
-//                 return NotFound();
-//             }
-//             return Ok(student);
-//         }
-//
-//         // GET: api/user/teachers/{id}
-//         [HttpGet("teachers/{id}")]
-//         public async Task<ActionResult<User>> GetTeacherById(int id)
-//         {
-//             var teacher = await _profesorService.GetTeacherByIdAsync(id);
-//             if (teacher == null)
-//             {
-//                 return NotFound();
-//             }
-//             return Ok(teacher);
-//         }
-//
-//         // POST: api/user/students
-//         [HttpPost("students")]
-//         public async Task<ActionResult<User>> AddStudent(User student)
-//         {
-//             await _elevService.AddStudentAsync(student);
-//             return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
-//         }
-//
-//         // POST: api/user/teachers
-//         [HttpPost("teachers")]
-//         public async Task<ActionResult<User>> AddTeacher(User teacher)
-//         {
-//             await _profesorService.AddTeacherAsync(teacher);
-//             return CreatedAtAction(nameof(GetTeacherById), new { id = teacher.Id }, teacher);
-//         }
-//
-//         // PUT: api/user/students/{id}
-//         [HttpPut("students/{id}")]
-//         public async Task<IActionResult> UpdateStudent(int id, User student)
-//         {
-//             if (id != student.Id)
-//             {
-//                 return BadRequest();
-//             }
-//
-//             await _elevService.UpdateStudentAsync(student);
-//             return NoContent();
-//         }
-//
-//         // PUT: api/user/teachers/{id}
-//         [HttpPut("teachers/{id}")]
-//         public async Task<IActionResult> UpdateTeacher(int id, User teacher)
-//         {
-//             if (id != teacher.Id)
-//             {
-//                 return BadRequest();
-//             }
-//
-//             await _profesorService.UpdateTeacherAsync(teacher);
-//             return NoContent();
-//         }
-//
-//         // DELETE: api/user/students/{id}
-//         [HttpDelete("students/{id}")]
-//         public async Task<IActionResult> DeleteStudent(string id)
-//         {
-//             var student = await _elevService.GetStudentByIdAsync(id);
-//             if (student == null)
-//             {
-//                 return NotFound();
-//             }
-//
-//             await _elevService.DeleteStudentAsync(id);
-//             return NoContent();
-//         }
-//
-//         // DELETE: api/user/teachers/{id}
-//         [HttpDelete("teachers/{id}")]
-//         public async Task<IActionResult> DeleteTeacher(int id)
-//         {
-//             var teacher = await _profesorService.GetTeacherByIdAsync(id);
-//             if (teacher == null)
-//             {
-//                 return NotFound();
-//             }
-//
-//             await _profesorService.DeleteTeacherAsync(id);
-//             return NoContent();
-//         }
-//     }
-// }
+﻿using backend_MT.Exceptions;
+using backend_MT.Models.DTOs.UserDTOs;
+using backend_MT.Service.UserService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Identity.Client;
+using backend_MT.Exceptions;
+using backend_MT.Models.DTOs;
+using backend_MT.Services;
+
+namespace backend_MT.Controllers
+{
+	[Route("api/[controller]")]
+	[ApiController]
+	public class UserController : ControllerBase
+	{
+		private readonly IUserService _userService;
+		public UserController(IUserService userService)
+		{
+			_userService = userService;
+		}
+		[Consumes("multipart/form-data")]
+		[HttpPost("register")]
+		[AllowAnonymous]
+		public async Task<IActionResult> Register([FromForm] RegisterDTO user)
+		{
+
+			var result = await _userService.RegisterAsync(user);
+			if (result.Succeeded)
+			{
+				return Ok();
+			}
+			else
+			{
+				var errors = result.Errors.Select(e => e.Description);
+				return BadRequest(errors);
+			}
+		}
+		[HttpPost("login")]
+		[AllowAnonymous]
+		public async Task<IActionResult> Login(LoginDTO user)
+		{
+			try
+			{
+				var result = await _userService.LoginAsync(user);
+				return Ok(new { Token = result, Message = $"Autentificat ca {user.username}" });
+			}
+			catch (LockedOutException e)
+			{
+				return BadRequest(e.Message);
+			}
+			catch (WrongDetailsException e)
+			{
+				return NotFound(e.Message);
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
+		[HttpGet("confirmEmail")]
+		[AllowAnonymous]
+		public async Task<IActionResult> ConfirmEmail(string username, string token)
+		{
+			try
+			{
+				await _userService.ConfirmEmail(username, token);
+				return Ok();
+			}
+			catch (NotFoundException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
+		[HttpPost("getUserDetails")]
+		[AllowAnonymous]
+		public async Task<IActionResult> getUserDetails(string username)
+		{
+			try
+			{
+				var result = await _userService.getUserDetails(username);
+				return Ok(result);
+			}
+			catch (NotFoundException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
+		//[HttpPost("uploadPhoto")]
+		//[AllowAnonymous]
+		//public async Task<IActionResult> uploadPhoto([FromForm] RegisterDTO user)
+		//{
+		//	try
+		//	{
+		//		var res = await _userService.uploadPhoto(user);
+		//		if (res == true)
+		//			return Ok(res);
+		//		else
+		//			return BadRequest(res);
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		return BadRequest(e.Message);
+		//	}
+		//}
+		[HttpPost("sendConfirmationEmail")]
+		[AllowAnonymous]
+		public async Task<IActionResult> sendConfirmationEmail([FromForm] RegisterDTO user)
+		{
+			try
+			{
+				await _userService.sendConfirmationEmail(user);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
+		[HttpPost("forgotPassword")]
+		[AllowAnonymous]
+		public async Task<IActionResult> forgotPassword(ForgotPasswordDTO user)
+		{
+			Console.WriteLine(user.username);
+			Console.WriteLine(user.email);
+			try
+			{
+				await _userService.forgotPassword(user);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
+		[HttpPost("resetPassword")]
+		[AllowAnonymous]
+		public async Task<IActionResult> resetPassword(ResetPasswordDTO user)
+		{
+			try
+			{
+				await _userService.resetPassword(user);
+				return Ok();
+			}
+			catch (Exception e)
+			{
+				return BadRequest(e.Message);
+			}
+		}
+		[HttpGet("getUser")]
+		[AllowAnonymous]
+		public async Task<IActionResult> getUser(string username)
+		{
+			try
+			{
+				var result = await _userService.getUserProfile(username);
+				return Ok(result);
+			}
+			catch (NotFoundException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
+		//[HttpPost("uploadDocument")]
+		//[AllowAnonymous]
+		//public async Task<IActionResult> uploadDocument(string username, string document, IFormFile file)
+		//{
+		//	try
+		//	{
+		//		await _userService.uploadDocument(username, document, file);
+		//		return Ok();
+		//	}
+		//	catch (Exception e)
+		//	{
+		//		return BadRequest(e.Message);
+		//	}
+		//}
+		[HttpGet("getById")]
+		[AllowAnonymous]
+		public async Task<IActionResult> getUserById(int id)
+		{
+			try
+			{
+				var result = await _userService.getUserById(id);
+				return Ok(result);
+			}
+			catch (NotFoundException e)
+			{
+				return NotFound(e.Message);
+			}
+		}
+	}
+}

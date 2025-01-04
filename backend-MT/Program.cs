@@ -23,6 +23,8 @@ using backend_MT.Service.RaspunsTemaService;
 using backend_MT.Service.SedintaService;
 using backend_MT.Service.SupportService;
 using backend_MT.Service.TemaService;
+using backend_MT.Service.UserService;
+using backend_MT.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
@@ -63,6 +65,8 @@ builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<ITemaRepository, TemaRepository>();
 builder.Services.AddScoped<ITemaService, TemaService>();
+builder.Services.AddScoped<IUserService, UserService>();
+
 
 
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
