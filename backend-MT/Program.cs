@@ -1,4 +1,5 @@
 using backend_MT.Data;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using backend_MT.Models;
 using backend_MT.Repositories.AbonamentRepository;
 using backend_MT.Repositories.CursRepository;
@@ -33,12 +34,34 @@ using backend_MT.Service.RaspunsTemaService;
 using backend_MT.Service.SedintaService;
 using backend_MT.Service.SupportService;
 using backend_MT.Service.TemaService;
+using backend_MT.Service.UserService;
+using backend_MT.Services;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
+
+builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
+{
+    options.Password.RequireDigit = true;
+    options.Password.RequiredLength = 8;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(15);
+    options.User.RequireUniqueEmail = true;
+})
+    .AddEntityFrameworkStores<ApplicationDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddScoped<IUserService, UserService>();
 
 // Configure Entity Framework Core with SQL Server
 if (!builder.Environment.IsEnvironment("Test"))
@@ -49,7 +72,33 @@ if (!builder.Environment.IsEnvironment("Test"))
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Scheme = "Bearer",
+        BearerFormat = "JWT",
+        In = ParameterLocation.Header,
+        Name = "Authorization",
+        Description = "Bearer Authentication with JWT Token",
+        Type = SecuritySchemeType.Http
+    });
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Id = "Bearer",
+                    Type = ReferenceType.SecurityScheme
+                }
+            },
+            new List<string>()
+        }
+    });
+});
+
 
 // Repositories
 builder.Services.AddScoped<IAbonamentRepository, AbonamentRepository>();
@@ -101,6 +150,7 @@ if (app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
+app.UseAuthentication();
 
 app.Run();
 

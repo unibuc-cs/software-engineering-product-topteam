@@ -1,131 +1,112 @@
-﻿// using backend_MT.Models;
-// using backend_MT.Service.ElevService;
-// using backend_MT.Service.ProfesorService;
-// using Microsoft.AspNetCore.Mvc;
-//
-// namespace backend_MT.Controllers
-// {
-//     [Route("api/[controller]")]
-//     [ApiController]
-//     public class UserController : ControllerBase
-//     {
-//         private readonly IElevService _elevService;
-//         private readonly IProfesorService _profesorService;
-//
-//         public UserController(IElevService elevService, IProfesorService profesorService)
-//         {
-//             _elevService = elevService;
-//             _profesorService = profesorService;
-//         }
-//
-//         // GET: api/user/students
-//         [HttpGet("students")]
-//         public async Task<ActionResult<IEnumerable<User>>> GetAllStudents()
-//         {
-//             var students = await _elevService.GetAllStudentsAsync();
-//             return Ok(students);
-//         }
-//
-//         // GET: api/user/teachers
-//         [HttpGet("teachers")]
-//         public async Task<ActionResult<IEnumerable<User>>> GetAllTeachers()
-//         {
-//             var teachers = await _profesorService.GetAllTeachersAsync();
-//             return Ok(teachers);
-//         }
-//
-//         // GET: api/user/students/{id}
-//         [HttpGet("students/{id}")]
-//         public async Task<ActionResult<User>> GetStudentById(string id)
-//         {
-//             var student = await _elevService.GetStudentByIdAsync(id);
-//             if (student == null)
-//             {
-//                 return NotFound();
-//             }
-//             return Ok(student);
-//         }
-//
-//         // GET: api/user/teachers/{id}
-//         [HttpGet("teachers/{id}")]
-//         public async Task<ActionResult<User>> GetTeacherById(int id)
-//         {
-//             var teacher = await _profesorService.GetTeacherByIdAsync(id);
-//             if (teacher == null)
-//             {
-//                 return NotFound();
-//             }
-//             return Ok(teacher);
-//         }
-//
-//         // POST: api/user/students
-//         [HttpPost("students")]
-//         public async Task<ActionResult<User>> AddStudent(User student)
-//         {
-//             await _elevService.AddStudentAsync(student);
-//             return CreatedAtAction(nameof(GetStudentById), new { id = student.Id }, student);
-//         }
-//
-//         // POST: api/user/teachers
-//         [HttpPost("teachers")]
-//         public async Task<ActionResult<User>> AddTeacher(User teacher)
-//         {
-//             await _profesorService.AddTeacherAsync(teacher);
-//             return CreatedAtAction(nameof(GetTeacherById), new { id = teacher.Id }, teacher);
-//         }
-//
-//         // PUT: api/user/students/{id}
-//         [HttpPut("students/{id}")]
-//         public async Task<IActionResult> UpdateStudent(int id, User student)
-//         {
-//             if (id != student.Id)
-//             {
-//                 return BadRequest();
-//             }
-//
-//             await _elevService.UpdateStudentAsync(student);
-//             return NoContent();
-//         }
-//
-//         // PUT: api/user/teachers/{id}
-//         [HttpPut("teachers/{id}")]
-//         public async Task<IActionResult> UpdateTeacher(int id, User teacher)
-//         {
-//             if (id != teacher.Id)
-//             {
-//                 return BadRequest();
-//             }
-//
-//             await _profesorService.UpdateTeacherAsync(teacher);
-//             return NoContent();
-//         }
-//
-//         // DELETE: api/user/students/{id}
-//         [HttpDelete("students/{id}")]
-//         public async Task<IActionResult> DeleteStudent(string id)
-//         {
-//             var student = await _elevService.GetStudentByIdAsync(id);
-//             if (student == null)
-//             {
-//                 return NotFound();
-//             }
-//
-//             await _elevService.DeleteStudentAsync(id);
-//             return NoContent();
-//         }
-//
-//         // DELETE: api/user/teachers/{id}
-//         [HttpDelete("teachers/{id}")]
-//         public async Task<IActionResult> DeleteTeacher(int id)
-//         {
-//             var teacher = await _profesorService.GetTeacherByIdAsync(id);
-//             if (teacher == null)
-//             {
-//                 return NotFound();
-//             }
-//
-//             await _profesorService.DeleteTeacherAsync(id);
-//             return NoContent();
-//         }
-//     }
-// }
+﻿using backend_MT.Exceptions;
+using backend_MT.Models;
+using backend_MT.Models.DTOs.UserDTOs;
+using backend_MT.Service.UserService;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+
+namespace backend_MT.Controllers
+{
+    [ApiController]
+    [Route("api/[controller]")]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserService _userService;
+        private readonly IConfiguration _configuration;
+
+        public UserController(IUserService userService, IConfiguration configuration)
+        {
+            _userService = userService;
+            _configuration = configuration;
+        }
+
+        [HttpPost("register")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Register([FromBody] RegisterDTO user)
+        {
+            if (user == null)
+            {
+                return BadRequest(new { Message = "User data is required" });
+            }
+
+            var result = await _userService.RegisterAsync(user);
+            if (result.Succeeded)
+            {
+                return Ok(new { Message = "User registered successfully" });
+            }
+            else
+            {
+                var errors = result.Errors.Select(e => e.Description).ToList();
+                return BadRequest(new { Errors = errors });
+            }
+        }
+
+
+        [HttpPost("login")]
+        [AllowAnonymous]
+        public async Task<IActionResult> Login([FromBody] LoginDTO user)
+        {
+            try
+            {
+                var result = await _userService.LoginAsync(user);
+                if (result != null)
+                {
+                    var token = GenerateJwtToken(user.username);
+
+                    Response.Cookies.Append("jwt", token, new CookieOptions
+                    {
+                        HttpOnly = true,
+                        Secure = true,
+                        SameSite = SameSiteMode.None,
+                        Expires = DateTimeOffset.UtcNow.AddMinutes(30)
+                    });
+
+                    return Ok(new { Message = $"Autentificat ca {user.username}" });
+                }
+                else
+                {
+                    return Unauthorized("Invalid login attempt");
+                }
+            }
+            catch (LockedOutException e)
+            {
+                return BadRequest(e.Message);
+            }
+            catch (WrongDetailsException e)
+            {
+                return Unauthorized(e.Message);
+            }
+            catch (Exception e)
+            {
+                return BadRequest(e.Message);
+            }
+        }
+
+        private string GenerateJwtToken(string username)
+        {
+            var claims = new[]
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, username),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Name, username)
+            };
+
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
+            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JWT:Issuer"],
+                audience: _configuration["JWT:Audience"],
+                claims: claims,
+                expires: DateTime.Now.AddMinutes(30),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+    }
+}
