@@ -1,0 +1,30 @@
+name: .NET CI (In-Memory DB Tests)
+
+on:
+  push:
+    branches: [ enhancement/refine-tests ]
+  pull_request:
+    branches: [ enhancement/refine-tests ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '9.0' # Adjust this to match your .NET version
+
+    - name: Restore dependencies
+      run: dotnet restore backend-MT.sln
+
+    - name: Build
+      run: dotnet build backend-MT.sln --no-restore --configuration Release
+
+    - name: Run Tests in backend-MT.Tests
+      working-directory: ./backend-MT.Tests
+      run: dotnet test
