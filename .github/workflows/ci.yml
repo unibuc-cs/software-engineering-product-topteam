@@ -2,9 +2,9 @@ name: .NET CI (In-Memory DB Tests)
 
 on:
   push:
-    branches: [ enhancement/refine-tests ]
+    branches: [ main ]
   pull_request:
-    branches: [ enhancement/refine-tests ]
+    branches: [ main ]
 
 jobs:
   build-and-test:
