@@ -28,7 +28,7 @@ Acest director include testele de performanță pentru evaluarea aplicației sub
 - Load Testing: Simulează încărcare moderată.
 - Stress Testing: Crește numărul de utilizatori până la limita maximă.
 - Spike Testing: Simulează creșteri bruște de trafic.
-- Soak Test: Menține o încărcare constantă pentru o perioadă îndelungată (ex. câteva ore) pentru a verifica probleme de memorie, stabilitate sau scurgeri de resurse (memory leaks).
+- Soak Testing: Menține o încărcare constantă pentru o perioadă îndelungată (ex. câteva ore) pentru a verifica probleme de memorie, stabilitate sau scurgeri de resurse (memory leaks).
 
 
 
