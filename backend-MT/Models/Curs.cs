@@ -10,6 +10,5 @@ namespace backend_MT.Models
         public string descriere { get; set; }
         public int nrSedinte { get; set; }
         public int pret { get; set; }
-        public ICollection<Abonament> abonamente { get; set; }
     }
 }
