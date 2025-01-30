@@ -19,7 +19,7 @@ namespace backend_MT.Models
         public ICollection<Mesaj>? mesaje { get; set; }
         public ICollection<Notificare>? notificari { get; set; }
         public ICollection<Feedback>? feedbackuri { get; set; }
-        public ICollection<Disponibilitate> disponibilitate { get; set; } //Pentru ambele roluri
+        public ICollection<Disponibilitate>? disponibilitate { get; set; } //Pentru ambele roluri
         public ICollection<RaspunsTema>? raspunsuriTema {  get; set; }
         public ICollection<Prezenta>? prezente {  get; set; }
 
@@ -28,7 +28,6 @@ namespace backend_MT.Models
         public ICollection<Grupa>? grupa { get; set; }
         public ICollection<Material>? materiale { get; set; }
         public ICollection<Tema>? teme { get; set; }
-        public ICollection<Predare>? predare { get; set; }
         public bool? profesorVerificat {  get; set; }
 
     }

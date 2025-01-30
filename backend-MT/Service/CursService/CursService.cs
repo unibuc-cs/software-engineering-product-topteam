@@ -1,4 +1,6 @@
-﻿using backend_MT.Models;
+﻿using AutoMapper;
+using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Repositories.CursRepository;
 
 namespace backend_MT.Service.CursService
@@ -6,15 +8,17 @@ namespace backend_MT.Service.CursService
     public class CursService : ICursService
     {
         private readonly ICursRepository _cursRepository;
+        private readonly IMapper _mapper;
 
-        public CursService(ICursRepository cursRepository)
+        public CursService(ICursRepository cursRepository, IMapper mapper)
         {
             _cursRepository = cursRepository;
+            _mapper = mapper;
         }
 
-        public async Task<IEnumerable<Curs>> GetAllCoursesAsync()
+        public async Task<IEnumerable<CursDTO>> GetAllCoursesAsync()
         {
-            return await _cursRepository.GetAllCoursesAsync();
+            return _mapper.Map<IEnumerable<CursDTO>>(await _cursRepository.GetAllCoursesAsync());
         }
 
         public async Task<Curs> GetCourseByIdAsync(int id)
@@ -22,14 +26,16 @@ namespace backend_MT.Service.CursService
             return await _cursRepository.GetCourseByIdAsync(id);
         }
 
-        public async Task AddCourseAsync(Curs curs)
+        public async Task AddCourseAsync(CursDTO curs)
         {
-            await _cursRepository.AddCourseAsync(curs);
+            await _cursRepository.AddCourseAsync(_mapper.Map<Curs>(curs));
         }
 
-        public async Task UpdateCourseAsync(Curs curs)
+        public async Task UpdateCourseAsync(int id, CursDTO curs)
         {
-            await _cursRepository.UpdateCourseAsync(curs);
+            var updatedCurs = await _cursRepository.GetCourseByIdAsync(id);
+            _mapper.Map(curs, updatedCurs);
+            await _cursRepository.UpdateCourseAsync(updatedCurs);
         }
 
         public async Task DeleteCourseAsync(int id)

@@ -7,6 +7,6 @@
         public DateTime oraIncepere { get; set; }
         public DateTime oraIncheiere { get; set; }
         public int grupaId { get; set; }
-        public virtual Grupa grupa { get; set; }
-    }
+		public ICollection<int> userEleviId { get; set; }
+	}
 }
