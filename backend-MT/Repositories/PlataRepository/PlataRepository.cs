@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.PlataRepository
             return await _context.plata.FindAsync(id);
         }
 
-        public async Task AddPaymentAsync(Plata plata)
+        public async Task<bool> AddPaymentAsync(Plata plata)
         {
             await _context.plata.AddAsync(plata);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdatePaymentAsync(Plata plata)
