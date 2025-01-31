@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.GrupaRepository
     {
         Task<IEnumerable<Grupa>> GetAllGroupsAsync();
         Task<Grupa> GetGroupByIdAsync(int id);
-        Task AddGroupAsync(Grupa grupa);
+        Task<bool> AddGroupAsync(Grupa grupa);
         Task UpdateGroupAsync(Grupa grupa);
         Task DeleteGroupAsync(int id);
     }

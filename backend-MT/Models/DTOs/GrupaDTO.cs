@@ -7,6 +7,6 @@
         public string linkMeet { get; set; }
         public int userProfesorId { get; set; }
         public int cursId { get; set; }
-        public ICollection<int> userEleviId { get; set; }
+        public ICollection<int>? userEleviId { get; set; }
     }
 }

@@ -8,7 +8,7 @@
 		public string pozaProfil { get; set; }
 		public string nrTelefon { get; set; }
 		public ICollection<int>? grupeAsociateElevId { get; set; }
-		public ICollection<int>? prezenteId {  get; set; }
+		public ICollection<int>? sedinteId {  get; set; }
 		public int plataId { get; set; }
 
 		public bool? profesorVerificat { get; set; }

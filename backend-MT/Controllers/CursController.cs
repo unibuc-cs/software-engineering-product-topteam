@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.CursService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/curs
         [HttpPost]
-        public async Task<ActionResult<Curs>> AddCourse(Curs curs)
+        public async Task<IActionResult> AddCourse(CursDTO curs)
         {
-            await _cursService.AddCourseAsync(curs);
-            return CreatedAtAction(nameof(GetCourseById), new { id = curs.cursId }, curs); // Asumând că Curs are o proprietate Id
+            if (await _cursService.AddCourseAsync(curs))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/curs/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCourse(int id, Curs curs)
+        public async Task<IActionResult> UpdateCourse(int id, CursDTO curs)
         {
-            if (id != curs.cursId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _cursService.UpdateCourseAsync(curs);
+            await _cursService.UpdateCourseAsync(id, curs);
             return NoContent();
         }
 

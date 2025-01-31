@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.MaterialeRepository
     {
         Task<IEnumerable<Material>> GetAllMaterialsAsync();
         Task<Material> GetMaterialByIdAsync(int id);
-        Task AddMaterialAsync(Material material);
+        Task<bool> AddMaterialAsync(Material material);
         Task UpdateMaterialAsync(Material material);
         Task DeleteMaterialAsync(int id);
     }

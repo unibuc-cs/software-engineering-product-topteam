@@ -26,9 +26,9 @@ namespace backend_MT.Service.CursService
             return await _cursRepository.GetCourseByIdAsync(id);
         }
 
-        public async Task AddCourseAsync(CursDTO curs)
+        public async Task<bool> AddCourseAsync(CursDTO curs)
         {
-            await _cursRepository.AddCourseAsync(_mapper.Map<Curs>(curs));
+            return (await _cursRepository.AddCourseAsync(_mapper.Map<Curs>(curs)));
         }
 
         public async Task UpdateCourseAsync(int id, CursDTO curs)

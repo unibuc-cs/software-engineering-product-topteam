@@ -26,8 +26,6 @@ namespace backend_MT.Data
         public DbSet<Plata> plata { get; set; }
         public DbSet<Mesaj> mesaj { get; set; }
         public DbSet<Prezenta> prezenta {  get; set; }
-        public DbSet<Predare> predare { get; set; }
-        public DbSet<Abonament> abonament {  get; set; }
         public DbSet<ParticipareGrupa> participareGrupa {  get; set; }
         public DbSet<Disponibilitate> disponibilitate { get; set; }
 
@@ -75,18 +73,6 @@ namespace backend_MT.Data
                 .HasOne(pg => pg.grupa)
                 .WithMany(g => g.participariGrupa)
                 .HasForeignKey(pg => pg.grupaId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Abonament>()
-                .HasOne(a => a.user)
-                .WithMany(u => u.abonamente)
-                .HasForeignKey(a => a.userId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<Abonament>()
-                .HasOne(a => a.curs)
-                .WithMany(c => c.abonamente)
-                .HasForeignKey(a => a.cursId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Feedback>()

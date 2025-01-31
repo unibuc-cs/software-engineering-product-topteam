@@ -47,4 +47,3 @@ namespace backend_MT.Helpers
 		}
 	}
 }
-}
