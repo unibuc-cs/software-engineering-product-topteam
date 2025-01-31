@@ -12,7 +12,6 @@ namespace backend_MT.Models
         public string prenume { get; set; }
         public string? nivel { get; set; }
         public string pozaProfil { get; set; }
-        public string nrTelefon { get; set; }
         public ICollection<ParticipareGrupa>? participariGrupa { get; set; }
         public ICollection<Plata>? plati {  get; set; }
         public ICollection<Support>? supporturi { get; set; }

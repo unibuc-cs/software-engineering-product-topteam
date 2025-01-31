@@ -57,8 +57,6 @@ builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddDefaultTokenProviders();
 
-builder.Services.AddScoped<IUserService, UserService>();
-
 // Configure Entity Framework Core with SQL Server
 if (!builder.Environment.IsEnvironment("Test"))
 {
@@ -95,6 +93,39 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddAuthentication(options => {
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(o =>
+{
+    o.TokenValidationParameters = new TokenValidationParameters()
+    {
+        ValidateActor = true,
+        ValidateAudience = true,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        ValidIssuer = builder.Configuration["Jwt:Issuer"],
+        ValidAudience = builder.Configuration["Jwt:Audience"],
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+        RoleClaimType = ClaimTypes.Role
+    };
+});
+
+builder.Services.AddAuthorization();
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowFrontendApp", policy =>
+    {
+        policy.SetIsOriginAllowed(origin =>
+            new Uri(origin).Host == "localhost") // Allow all localhost origins
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
+
+
 
 // Repositories
 builder.Services.AddScoped<ICursRepository, CursRepository>();
@@ -123,10 +154,13 @@ builder.Services.AddScoped<IRaspunsTemaService, RaspunsTemaService>();
 builder.Services.AddScoped<ISedintaService, SedintaService>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<ITemaService, TemaService>();
+builder.Services.AddScoped<IUserService, UserService>();
 
 
 
 var app = builder.Build();
+
+app.UseCors("AllowFrontendApp");
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -135,11 +169,17 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+await Seed.InitializeRoles(app);
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHttpsRedirection();
+}
+
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 app.UseAuthentication();
 
 app.Run();
-
-public partial class Program { }

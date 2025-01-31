@@ -1,13 +1,9 @@
 ﻿using backend_MT.Exceptions;
-using backend_MT.Models;
 using backend_MT.Models.DTOs.UserDTOs;
 using backend_MT.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace backend_MT.Controllers
 {
@@ -16,12 +12,9 @@ namespace backend_MT.Controllers
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
-        private readonly IConfiguration _configuration;
-
-        public UserController(IUserService userService, IConfiguration configuration)
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _configuration = configuration;
         }
 
         [HttpPost("register")]
@@ -45,18 +38,15 @@ namespace backend_MT.Controllers
             }
         }
 
-
         [HttpPost("login")]
         [AllowAnonymous]
         public async Task<IActionResult> Login([FromBody] LoginDTO user)
         {
             try
             {
-                var result = await _userService.LoginAsync(user);
-                if (result != null)
+                var token = await _userService.LoginAsync(user);
+                if (!string.IsNullOrEmpty(token))
                 {
-                    var token = GenerateJwtToken(user.username);
-
                     Response.Cookies.Append("jwt", token, new CookieOptions
                     {
                         HttpOnly = true,
@@ -64,8 +54,7 @@ namespace backend_MT.Controllers
                         SameSite = SameSiteMode.None,
                         Expires = DateTimeOffset.UtcNow.AddMinutes(30)
                     });
-
-                    return Ok(new { Message = $"Autentificat ca {user.username}" });
+                    return Ok(new { Message = $"Authenticated as {user.username}", Token = token });
                 }
                 else
                 {
@@ -84,29 +73,6 @@ namespace backend_MT.Controllers
             {
                 return BadRequest(e.Message);
             }
-        }
-
-        private string GenerateJwtToken(string username)
-        {
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, username),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(ClaimTypes.Name, username)
-            };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JWT:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-
-            var token = new JwtSecurityToken(
-                issuer: _configuration["JWT:Issuer"],
-                audience: _configuration["JWT:Audience"],
-                claims: claims,
-                expires: DateTime.Now.AddMinutes(30),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }
