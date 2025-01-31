@@ -1,5 +1,7 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Repositories.TemaRepository;
+using backend_MT.Service.TemaService;
 using Microsoft.AspNetCore.Mvc;
 
 namespace backend_MT.Controllers
@@ -8,24 +10,24 @@ namespace backend_MT.Controllers
     [ApiController]
     public class TemaController : ControllerBase
     {
-        private readonly ITemaRepository _temaRepository;
+        private readonly ITemaService _temaService;
 
-        public TemaController(ITemaRepository temaRepository)
+        public TemaController(ITemaService temaService)
         {
-            _temaRepository = temaRepository;
+			_temaService = temaService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Tema>>> GetAllAssignments()
+        public async Task<ActionResult<IEnumerable<TemaDTO>>> GetAllAssignments()
         {
-            var assignments = await _temaRepository.GetAllAssignmentsAsync();
+            var assignments = await _temaService.GetAllAssignmentsAsync();
             return Ok(assignments);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Tema>> GetAssignmentById(int id)
         {
-            var assignment = await _temaRepository.GetAssignmentByIdAsync(id);
+            var assignment = await _temaService.GetAssignmentByIdAsync(id);
             if (assignment == null)
             {
                 return NotFound();
@@ -34,28 +36,24 @@ namespace backend_MT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Tema>> AddAssignment(Tema tema)
+        public async Task<ActionResult> AddAssignment(TemaDTO tema)
         {
-            await _temaRepository.AddAssignmentAsync(tema);
-            return CreatedAtAction(nameof(GetAssignmentById), new { id = tema.temaId }, tema);
+            if (await _temaService.AddAssignmentAsync(tema))
+                return Ok();
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateAssignment(int id, Tema tema)
+        public async Task<ActionResult> UpdateAssignment(int id, TemaDTO tema)
         {
-            if (id != tema.temaId)
-            {
-                return BadRequest();
-            }
-
-            await _temaRepository.UpdateAssignmentAsync(tema);
+            await _temaService.UpdateAssignmentAsync(id, tema);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteAssignment(int id)
         {
-            await _temaRepository.DeleteAssignmentAsync(id);
+            await _temaService.DeleteAssignmentAsync(id);
             return NoContent();
         }
     }

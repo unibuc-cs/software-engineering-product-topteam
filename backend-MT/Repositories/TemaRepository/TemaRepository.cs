@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.TemaRepository
             return await _context.tema.FindAsync(id);
         }
 
-        public async Task AddAssignmentAsync(Tema tema)
+        public async Task<bool> AddAssignmentAsync(Tema tema)
         {
             await _context.tema.AddAsync(tema);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdateAssignmentAsync(Tema tema)
