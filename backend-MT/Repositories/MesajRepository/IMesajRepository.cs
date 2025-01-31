@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.MesajRepository
     {
         Task<IEnumerable<Mesaj>> GetAllMessagesAsync();
         Task<Mesaj> GetMessageByIdAsync(int id);
-        Task AddMessageAsync(Mesaj mesaj);
+        Task<bool> AddMessageAsync(Mesaj mesaj);
         Task UpdateMessageAsync(Mesaj mesaj);
         Task DeleteMessageAsync(int id);
     }

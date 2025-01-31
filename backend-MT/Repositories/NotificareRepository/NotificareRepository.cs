@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.NotificareRepository
             return await _context.notificare.FindAsync(id);
         }
 
-        public async Task AddNotificationAsync(Notificare notificare)
+        public async Task<bool> AddNotificationAsync(Notificare notificare)
         {
             await _context.notificare.AddAsync(notificare);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdateNotificationAsync(Notificare notificare)

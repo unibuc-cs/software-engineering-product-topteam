@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.MesajRepository
             return await _context.mesaj.FindAsync(id);
         }
 
-        public async Task AddMessageAsync(Mesaj mesaj)
+        public async Task<bool> AddMessageAsync(Mesaj mesaj)
         {
             await _context.mesaj.AddAsync(mesaj);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdateMessageAsync(Mesaj mesaj)
