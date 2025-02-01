@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.SedintaRepository
     {
         Task<IEnumerable<Sedinta>> GetAllSessionsAsync();
         Task<Sedinta> GetSessionByIdAsync(int id);
-        Task AddSessionAsync(Sedinta sedinta);
+        Task<bool> AddSessionAsync(Sedinta sedinta);
         Task UpdateSessionAsync(Sedinta sedinta);
         Task DeleteSessionAsync(int id);
     }

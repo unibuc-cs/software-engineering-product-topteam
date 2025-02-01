@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.NotificareService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/notificare
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Notificare>>> GetAllNotifications()
+        public async Task<ActionResult<IEnumerable<NotificareDTO>>> GetAllNotifications()
         {
             var notificari = await _notificareService.GetAllNotificationsAsync();
             return Ok(notificari);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/notificare
         [HttpPost]
-        public async Task<ActionResult<Notificare>> AddNotification(Notificare notificare)
+        public async Task<ActionResult> AddNotification(NotificareDTO notificare)
         {
-            await _notificareService.AddNotificationAsync(notificare);
-            return CreatedAtAction(nameof(GetNotificationById), new { id = notificare.notificareId}, notificare); // Asumând că Notificare are o proprietate Id
+            if (await _notificareService.AddNotificationAsync(notificare))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/notificare/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateNotification(int id, Notificare notificare)
+        public async Task<IActionResult> UpdateNotification(int id, NotificareDTO notificare)
         {
-            if (id != notificare.notificareId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _notificareService.UpdateNotificationAsync(notificare);
+            await _notificareService.UpdateNotificationAsync(id, notificare);
             return NoContent();
         }
 

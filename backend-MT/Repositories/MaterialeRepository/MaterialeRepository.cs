@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.MaterialeRepository
             return await _context.material.FindAsync(id);
         }
 
-        public async Task AddMaterialAsync(Material material)
+        public async Task<bool> AddMaterialAsync(Material material)
         {
             await _context.material.AddAsync(material);
-            await _context.SaveChangesAsync();
+            return (await _context.SaveChangesAsync() > 0);
         }
 
         public async Task UpdateMaterialAsync(Material material)

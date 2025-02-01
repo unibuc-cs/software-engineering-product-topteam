@@ -1,13 +1,14 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 
 namespace backend_MT.Service.PlataService
 {
     public interface IPlataService
     {
-        Task<IEnumerable<Plata>> GetAllPaymentsAsync();
+        Task<IEnumerable<PlataDTO>> GetAllPaymentsAsync();
         Task<Plata> GetPaymentByIdAsync(int id);
-        Task AddPaymentAsync(Plata plata);
-        Task UpdatePaymentAsync(Plata plata);
+        Task<bool> AddPaymentAsync(PlataDTO plata);
+        Task UpdatePaymentAsync(int id, PlataDTO plata);
         Task DeletePaymentAsync(int id);
     }
 }

@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.NotificareRepository
     {
         Task<IEnumerable<Notificare>> GetAllNotificationsAsync();
         Task<Notificare> GetNotificationByIdAsync(int id);
-        Task AddNotificationAsync(Notificare notificare);
+        Task<bool> AddNotificationAsync(Notificare notificare);
         Task UpdateNotificationAsync(Notificare notificare);
         Task DeleteNotificationAsync(int id);
     }

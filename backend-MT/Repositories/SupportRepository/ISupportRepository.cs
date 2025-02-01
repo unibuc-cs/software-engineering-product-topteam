@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.SupportRepository
     {
         Task<IEnumerable<Support>> GetAllSupportMessagesAsync();
         Task<Support> GetSupportMessageByIdAsync(int id);
-        Task AddSupportMessageAsync(Support support);
+        Task<bool> AddSupportMessageAsync(Support support);
         Task UpdateSupportMessageAsync(Support support);
         Task DeleteSupportMessageAsync(int id);
     }

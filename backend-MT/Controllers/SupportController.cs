@@ -1,5 +1,7 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Repositories.SupportRepository;
+using backend_MT.Service.SupportService;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,24 +11,24 @@ namespace backend_MT.Controllers
     [ApiController]
     public class SupportController : ControllerBase
     {
-        private readonly ISupportRepository _supportRepository;
+        private readonly ISupportService _supportService;
 
-        public SupportController(ISupportRepository supportRepository)
+        public SupportController(ISupportService supportService)
         {
-            _supportRepository = supportRepository;
+            _supportService = supportService;
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Support>>> GetAllSupportMessages()
+        public async Task<ActionResult<IEnumerable<SupportDTO>>> GetAllSupportMessages()
         {
-            var messages = await _supportRepository.GetAllSupportMessagesAsync();
+            var messages = await _supportService.GetAllSupportMessagesAsync();
             return Ok(messages);
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Support>> GetSupportMessageById(int id)
         {
-            var message = await _supportRepository.GetSupportMessageByIdAsync(id);
+            var message = await _supportService.GetSupportMessageByIdAsync(id);
             if (message == null)
             {
                 return NotFound();
@@ -35,28 +37,24 @@ namespace backend_MT.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<Support>> AddSupportMessage(Support support)
+        public async Task<ActionResult> AddSupportMessage(SupportDTO support)
         {
-            await _supportRepository.AddSupportMessageAsync(support);
-            return CreatedAtAction(nameof(GetSupportMessageById), new { id = support.supportId }, support);
+            if (await _supportService.AddSupportMessageAsync(support))
+                return Ok();
+            return BadRequest();
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult> UpdateSupportMessage(int id, Support support)
+        public async Task<ActionResult> UpdateSupportMessage(int id, SupportDTO support)
         {
-            if (id != support.supportId)
-            {
-                return BadRequest();
-            }
-
-            await _supportRepository.UpdateSupportMessageAsync(support);
+            await _supportService.UpdateSupportMessageAsync(id, support);
             return NoContent();
         }
 
         [HttpDelete("{id}")]
         public async Task<ActionResult> DeleteSupportMessage(int id)
         {
-            await _supportRepository.DeleteSupportMessageAsync(id);
+            await _supportService.DeleteSupportMessageAsync(id);
             return NoContent();
         }
     }

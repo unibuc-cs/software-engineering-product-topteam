@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.MaterialeService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/material
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Material>>> GetAllMaterials()
+        public async Task<ActionResult<IEnumerable<MaterialDTO>>> GetAllMaterials()
         {
             var materiale = await _materialService.GetAllMaterialsAsync();
             return Ok(materiale);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/material
         [HttpPost]
-        public async Task<ActionResult<Material>> AddMaterial(Material material)
+        public async Task<ActionResult> AddMaterial(MaterialDTO material)
         {
-            await _materialService.AddMaterialAsync(material);
-            return CreatedAtAction(nameof(GetMaterialById), new { id = material.materialId }, material); // Asumând că Material are o proprietate Id
+            if (await _materialService.AddMaterialAsync(material))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/material/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMaterial(int id, Material material)
+        public async Task<IActionResult> UpdateMaterial(int id, MaterialDTO material)
         {
-            if (id != material.materialId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _materialService.UpdateMaterialAsync(material);
+            await _materialService.UpdateMaterialAsync(id, material);
             return NoContent();
         }
 

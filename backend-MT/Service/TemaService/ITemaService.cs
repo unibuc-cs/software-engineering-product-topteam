@@ -1,13 +1,14 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 
 namespace backend_MT.Service.TemaService
 {
     public interface ITemaService
     {
-        Task<IEnumerable<Tema>> GetAllAssignmentsAsync();
+        Task<IEnumerable<TemaDTO>> GetAllAssignmentsAsync();
         Task<Tema> GetAssignmentByIdAsync(int id);
-        Task AddAssignmentAsync(Tema tema);
-        Task UpdateAssignmentAsync(Tema tema);
+        Task<bool> AddAssignmentAsync(TemaDTO tema);
+        Task UpdateAssignmentAsync(int id, TemaDTO tema);
         Task DeleteAssignmentAsync(int id);
     }
 }
