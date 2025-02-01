@@ -4,17 +4,19 @@ import { Inter } from "next/font/google";
 import { useEffect, useState } from "react";
 import { useRouter, usePathname } from "next/navigation";
 import { Navbar } from "./components/Navbar";
-import { getUserFromToken } from "./lib/auth";
 import type { AuthState, User } from "./types/auth";
 import "./globals.css";
+import type React from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
-const studentRoutes = ["/shop", "/enrolled-courses", "/homework"];
+const publicRoutes = ["/login", "/register"];
+const studentRoutes = ["/shop", "/enrolled-courses", "/homework", "/user"];
 const professorRoutes = [
   "/professor/user",
   "/professor/courses",
   "/professor/assign-homework",
+  "/professor/create-course",
 ];
 
 export default function RootLayout({
@@ -31,27 +33,35 @@ export default function RootLayout({
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    const role = localStorage.getItem("userRole") as User["role"] | null;
+    const userString = localStorage.getItem("user");
 
-    if (token && role) {
-      const user = getUserFromToken(token);
-      if (user) {
-        setAuthState({ user: { ...user, role }, token });
+    console.log("Current pathname:", pathname);
 
-        // Check if the user is trying to access a route they shouldn't
-        if (
-          (role === "student" &&
-            professorRoutes.some((route) => pathname.startsWith(route))) ||
-          (role === "professor" &&
-            studentRoutes.some((route) => pathname.startsWith(route)))
-        ) {
-          router.push(role === "student" ? "/shop" : "/professor/user");
-        }
-      } else {
-        // Invalid token, redirect to login
-        router.push("/login");
+    if (publicRoutes.includes(pathname)) {
+      console.log("Accessing public route");
+      return;
+    }
+
+    if (token && userString) {
+      const user = JSON.parse(userString) as User;
+      console.log("User data from localStorage:", user);
+      setAuthState({ user, token });
+
+      // Check if the user is trying to access a route they shouldn't
+      if (
+        (!user.profesorVerificat &&
+          professorRoutes.some((route) => pathname.startsWith(route))) ||
+        (user.profesorVerificat &&
+          studentRoutes.some((route) => pathname.startsWith(route)))
+      ) {
+        const redirectPath = user.profesorVerificat
+          ? "/professor/user"
+          : "/shop";
+        console.log("Redirecting to appropriate route:", redirectPath);
+        router.push(redirectPath);
       }
-    } else if (!["/login", "/register"].includes(pathname)) {
+    } else {
+      console.log("No token or user data, redirecting to login");
       router.push("/login");
     }
   }, [pathname, router]);

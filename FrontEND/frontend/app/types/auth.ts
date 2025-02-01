@@ -1,30 +1,35 @@
 export interface User {
-  id: string
-  firstName: string
-  lastName: string
-  username: string
-  role: "student" | "professor"
-  profilePhotoUrl?: string
-  telephone?: string
+  id?: string;
+  username: string;
+  profesorVerificat: boolean;
+  nume: string;
+  prenume: string;
+  nivel: string;
+  pozaProfil: string;
+  email: string;
+  nrTelefon: string;
+  // Add other user properties as needed
 }
 
 export interface LoginCredentials {
-  username: string
-  password: string
+  username: string;
+  parola: string;
+  remember: boolean;
 }
 
 export interface RegisterData {
-  firstName: string
-  lastName: string
-  username: string
-  password: string
-  role: "student" | "professor"
-  profilePhoto?: File
-  telephone?: string
+  parola: string;
+  nume: string;
+  prenume: string;
+  username: string;
+  nivel: string;
+  pozaProfil: string;
+  email: string;
+  nrTelefon: string;
+  profesorVerificat: boolean;
 }
 
 export interface AuthState {
-  user: User | null
-  token: string | null
+  user: User | null;
+  token: string | null;
 }
-

@@ -1,64 +1,67 @@
-import type { LoginCredentials, RegisterData, User } from "../types/auth"
+import type { LoginCredentials, RegisterData, User } from "../types/auth";
 
-// Dummy user data for testing
-const dummyUsers: User[] = [
-  {
-    id: "1",
-    firstName: "John",
-    lastName: "Doe",
-    username: "johndoe",
-    role: "student",
-  },
-  {
-    id: "2",
-    firstName: "Jane",
-    lastName: "Smith",
-    username: "janesmith",
-    role: "professor",
-  },
-]
+const API_BASE_URL = "http://localhost:5081/api";
 
-export async function login(credentials: LoginCredentials): Promise<{ user: User; token: string } | null> {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000))
+export async function login(
+  credentials: LoginCredentials
+): Promise<{ user: User; token: string; message: string } | null> {
+  try {
+    console.log("Sending login request with credentials:", credentials);
 
-  const user = dummyUsers.find((u) => u.username === credentials.username)
+    const response = await fetch(`${API_BASE_URL}/User/login`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(credentials),
+    });
 
-  if (user) {
-    // In a real app, you would validate the password here
-    return { user, token: "dummy_token" }
+    if (!response.ok) {
+      throw new Error("Login failed");
+    }
+
+    const data = await response.json();
+    console.log("Received login response:", data);
+
+    // Ensure profesorVerificat is a boolean
+    const profesorVerificat = data.profesorVerificat === true;
+
+    const user: User = {
+      username: credentials.username,
+      profesorVerificat: profesorVerificat,
+      // Add other user properties as needed
+      nume: data.nume || "",
+      prenume: data.prenume || "",
+      nivel: data.nivel || "",
+      pozaProfil: data.pozaProfil || "",
+      email: data.email || "",
+      nrTelefon: data.nrTelefon || "",
+    };
+
+    console.log("Processed user data:", user);
+
+    return {
+      user,
+      token: data.token,
+      message: data.message,
+    };
+  } catch (error) {
+    console.error("Login error:", error);
+    return null;
   }
-
-  return null
 }
 
 export async function register(data: RegisterData): Promise<User | null> {
-  // Simulate API call
-  await new Promise((resolve) => setTimeout(resolve, 1000))
-
-  // In a real app, you would create a new user in the database
-  const newUser: User = {
-    id: String(dummyUsers.length + 1),
-    firstName: data.firstName,
-    lastName: data.lastName,
-    username: data.username,
-    role: data.role,
-    telephone: data.telephone,
-    profilePhotoUrl: data.profilePhoto ? URL.createObjectURL(data.profilePhoto) : undefined,
-  }
-
-  dummyUsers.push(newUser)
-  return newUser
+  // ... (keep the existing register function)
 }
 
 export function getUserFromToken(token: string): User | null {
-  // In a real app, you would validate the token and fetch the user data
-  // For this example, we'll just return the first user
-  return dummyUsers[0]
+  // This function might need to be updated based on how your backend handles token validation
+  // For now, we'll return null
+  return null;
 }
 
 export function logout() {
-  localStorage.removeItem("authToken")
-  localStorage.removeItem("userRole")
+  localStorage.removeItem("authToken");
+  localStorage.removeItem("userRole");
 }
-
