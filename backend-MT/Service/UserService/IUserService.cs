@@ -9,5 +9,7 @@ namespace backend_MT.Service.UserService
 	{
         Task<IdentityResult> RegisterAsync(RegisterDTO newUser);
         Task<string> LoginAsync(LoginDTO login);
-    }
+		Task<UserDTO> GetCurrentUserInfoAsync();
+
+	}
 }

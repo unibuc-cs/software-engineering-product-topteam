@@ -8,21 +8,26 @@ using System.Security.Claims;
 using System.Text;
 using static backend_MT.Models.Roles.Role;
 using backend_MT.Exceptions;
+using AutoMapper;
 
 namespace backend_MT.Services
 {
     public class UserService : IUserService
     {
-        private readonly UserManager<User> _userManager;
-        private readonly SignInManager<User> _signInManager;
+		private readonly UserManager<User> _userManager;
+		private readonly SignInManager<User> _signInManager;
+		private readonly IHttpContextAccessor _httpContextAccessor;
+		private readonly IMapper _mapper;
 
-        public UserService(UserManager<User> userManager, SignInManager<User> signInManager)
-        {
-            _userManager = userManager;
-            _signInManager = signInManager;
-        }
+		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+		{
+			_userManager = userManager;
+			_signInManager = signInManager;
+			_httpContextAccessor = httpContextAccessor;
+            _mapper = mapper;
+		}
 
-        public async Task<IdentityResult> RegisterAsync(RegisterDTO newUser)
+		public async Task<IdentityResult> RegisterAsync(RegisterDTO newUser)
         {
             var user = new User
             {
@@ -99,5 +104,24 @@ namespace backend_MT.Services
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
-    }
+
+		public async Task<UserDTO> GetCurrentUserInfoAsync()
+		{
+			var userId = _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+			if (userId == null)
+			{
+				throw new NotFoundException("User not found");
+			}
+
+			var user = await _userManager.FindByIdAsync(userId);
+			if (user == null)
+			{
+				throw new NotFoundException("User not found");
+			}
+
+			return _mapper.Map<UserDTO>(user);
+		}
+
+
+	}
 }

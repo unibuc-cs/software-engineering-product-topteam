@@ -35,13 +35,12 @@ using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using System.Security.Claims;
 using backend_MT.Helpers;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllers();
-
-builder.Services.AddAutoMapper(typeof(MapperProfile).Assembly);
 
 
 builder.Services.AddIdentity<User, IdentityRole<int>>(options =>
@@ -63,6 +62,7 @@ if (!builder.Environment.IsEnvironment("Test"))
     builder.Services.AddDbContext<ApplicationDbContext>(options =>
         options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 }
+
 
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -140,6 +140,17 @@ builder.Services.AddScoped<IRaspunsTemaRepository, RaspunsTemaRepository>();
 builder.Services.AddScoped<ISedintaRepository, SedintaRepository>();
 builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ITemaRepository, TemaRepository>();
+
+var mapperConfig = new MapperConfiguration(mc =>
+{
+	// Resolve DbContext from the service provider
+	var serviceProvider = builder.Services.BuildServiceProvider();
+	var dbContext = serviceProvider.GetRequiredService<ApplicationDbContext>();
+	mc.AddProfile(new MapperProfile(dbContext)); // Create and add your profile manually
+});
+
+IMapper mapper = mapperConfig.CreateMapper();
+builder.Services.AddSingleton(mapper);
 
 // Services
 builder.Services.AddScoped<ICursService, CursService>();
