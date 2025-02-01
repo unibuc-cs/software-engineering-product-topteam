@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.DisponibilitateRepository
     {
         Task<IEnumerable<Disponibilitate>> GetAllDisponibilitatiAsync();
         Task<Disponibilitate> GetDisponibilitateByIdAsync(int id);
-        Task AddDisponibilitateAsync(Disponibilitate disponibilitate);
+        Task<bool> AddDisponibilitateAsync(Disponibilitate disponibilitate);
         Task UpdateDisponibilitateAsync(Disponibilitate disponibilitate);
         Task DeleteDisponibilitateAsync(int id);
     }

@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.RaspunsTemaService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/raspunsTema
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<RaspunsTema>>> GetAllResponses()
+        public async Task<ActionResult<IEnumerable<RaspunsTemaDTO>>> GetAllResponses()
         {
             var raspunsuri = await _raspunsTemaService.GetAllResponsesAsync();
             return Ok(raspunsuri);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/raspunsTema
         [HttpPost]
-        public async Task<ActionResult<RaspunsTema>> AddResponse(RaspunsTema raspunsTema)
+        public async Task<ActionResult> AddResponse(RaspunsTemaDTO raspunsTema)
         {
-            await _raspunsTemaService.AddResponseAsync(raspunsTema);
-            return CreatedAtAction(nameof(GetResponseById), new { id = raspunsTema.raspunsTemaId }, raspunsTema); // Asumând că RaspunsTema are o proprietate Id
+            if (await _raspunsTemaService.AddResponseAsync(raspunsTema))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/raspunsTema/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateResponse(int id, RaspunsTema raspunsTema)
+        public async Task<IActionResult> UpdateResponse(int id, RaspunsTemaDTO raspunsTema)
         {
-            if (id != raspunsTema.raspunsTemaId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _raspunsTemaService.UpdateResponseAsync(raspunsTema);
+            await _raspunsTemaService.UpdateResponseAsync(id, raspunsTema);
             return NoContent();
         }
 

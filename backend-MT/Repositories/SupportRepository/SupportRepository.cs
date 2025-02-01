@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.SupportRepository
             return await _context.support.FindAsync(id);
         }
 
-        public async Task AddSupportMessageAsync(Support support)
+        public async Task<bool> AddSupportMessageAsync(Support support)
         {
             await _context.support.AddAsync(support);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdateSupportMessageAsync(Support support)

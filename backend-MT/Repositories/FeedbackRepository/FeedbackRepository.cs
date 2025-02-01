@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.FeedbackRepository
             return await _context.feedback.FindAsync(id);
         }
 
-        public async Task AddFeedbackAsync(Feedback feedback)
+        public async Task<bool> AddFeedbackAsync(Feedback feedback)
         {
             await _context.feedback.AddAsync(feedback);
-            await _context.SaveChangesAsync();
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
         public async Task UpdateFeedbackAsync(Feedback feedback)

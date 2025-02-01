@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.PlataRepository
     {
         Task<IEnumerable<Plata>> GetAllPaymentsAsync();
         Task<Plata> GetPaymentByIdAsync(int id);
-        Task AddPaymentAsync(Plata plata);
+        Task<bool> AddPaymentAsync(Plata plata);
         Task UpdatePaymentAsync(Plata plata);
         Task DeletePaymentAsync(int id);
     }

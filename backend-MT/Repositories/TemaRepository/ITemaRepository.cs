@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.TemaRepository
     {
         Task<IEnumerable<Tema>> GetAllAssignmentsAsync();
         Task<Tema> GetAssignmentByIdAsync(int id);
-        Task AddAssignmentAsync(Tema tema);
+        Task<bool> AddAssignmentAsync(Tema tema);
         Task UpdateAssignmentAsync(Tema tema);
         Task DeleteAssignmentAsync(int id);
     }

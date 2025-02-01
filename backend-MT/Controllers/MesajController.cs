@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.MesajService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/mesaj
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Mesaj>>> GetAllMessages()
+        public async Task<ActionResult<IEnumerable<MesajDTO>>> GetAllMessages()
         {
             var mesaje = await _mesajService.GetAllMessagesAsync();
             return Ok(mesaje);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/mesaj
         [HttpPost]
-        public async Task<ActionResult<Mesaj>> AddMessage(Mesaj mesaj)
+        public async Task<ActionResult> AddMessage(MesajDTO mesaj)
         {
-            await _mesajService.AddMessageAsync(mesaj);
-            return CreatedAtAction(nameof(GetMessageById), new { id = mesaj.mesajId }, mesaj); // Asumând că Mesaj are o proprietate Id
+            if (await _mesajService.AddMessageAsync(mesaj))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/mesaj/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateMessage(int id, Mesaj mesaj)
+        public async Task<IActionResult> UpdateMessage(int id, MesajDTO mesaj)
         {
-            if (id != mesaj.mesajId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _mesajService.UpdateMessageAsync(mesaj);
+            await _mesajService.UpdateMessageAsync(id, mesaj);
             return NoContent();
         }
 

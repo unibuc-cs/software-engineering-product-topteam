@@ -27,10 +27,12 @@ namespace backend_MT.Repositories.DisponibilitateRepository
                 .FirstOrDefaultAsync(d => d.disponibilitateId == id);
         }
 
-        public async Task AddDisponibilitateAsync(Disponibilitate disponibilitate)
+        public async Task<bool> AddDisponibilitateAsync(Disponibilitate disponibilitate)
         {
             await _context.disponibilitate.AddAsync(disponibilitate);
-            await _context.SaveChangesAsync();
+            if (await _context.SaveChangesAsync() > 0)
+                    return true;
+            return false;
         }
 
         public async Task UpdateDisponibilitateAsync(Disponibilitate disponibilitate)

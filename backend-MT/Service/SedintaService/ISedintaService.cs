@@ -1,13 +1,14 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 
 namespace backend_MT.Service.SedintaService
 {
     public interface ISedintaService
     {
-        Task<IEnumerable<Sedinta>> GetAllSessionsAsync();
+        Task<IEnumerable<SedintaDTO>> GetAllSessionsAsync();
         Task<Sedinta> GetSessionByIdAsync(int id);
-        Task AddSessionAsync(Sedinta sedinta);
-        Task UpdateSessionAsync(Sedinta sedinta);
+        Task<bool> AddSessionAsync(SedintaDTO sedinta);
+        Task UpdateSessionAsync(int id, SedintaDTO sedinta);
         Task DeleteSessionAsync(int id);
     }
 }

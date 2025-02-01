@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.PlataService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/plata
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Plata>>> GetAllPayments()
+        public async Task<ActionResult<IEnumerable<PlataDTO>>> GetAllPayments()
         {
             var plati = await _plataService.GetAllPaymentsAsync();
             return Ok(plati);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/plata
         [HttpPost]
-        public async Task<ActionResult<Plata>> AddPayment(Plata plata)
+        public async Task<ActionResult> AddPayment(PlataDTO plata)
         {
-            await _plataService.AddPaymentAsync(plata);
-            return CreatedAtAction(nameof(GetPaymentById), new { id = plata.plataId }, plata); // Asumând că Plata are o proprietate Id
+            if (await _plataService.AddPaymentAsync(plata));
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/plata/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdatePayment(int id, Plata plata)
+        public async Task<IActionResult> UpdatePayment(int id, PlataDTO plata)
         {
-            if (id != plata.plataId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _plataService.UpdatePaymentAsync(plata);
+            await _plataService.UpdatePaymentAsync(id, plata);
             return NoContent();
         }
 

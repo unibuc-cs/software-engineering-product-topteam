@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.SedintaRepository
             return await _context.sedinta.FindAsync(id);
         }
 
-        public async Task AddSessionAsync(Sedinta sedinta)
+        public async Task<bool> AddSessionAsync(Sedinta sedinta)
         {
             await _context.sedinta.AddAsync(sedinta);
-            await _context.SaveChangesAsync();
+            return await _context.SaveChangesAsync() > 0;
         }
 
         public async Task UpdateSessionAsync(Sedinta sedinta)

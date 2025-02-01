@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.FeedbackRepository
     {
         Task<IEnumerable<Feedback>> GetAllFeedbacksAsync();
         Task<Feedback> GetFeedbackByIdAsync(int id);
-        Task AddFeedbackAsync(Feedback feedback);
+        Task<bool> AddFeedbackAsync(Feedback feedback);
         Task UpdateFeedbackAsync(Feedback feedback);
         Task DeleteFeedbackAsync(int id);
     }

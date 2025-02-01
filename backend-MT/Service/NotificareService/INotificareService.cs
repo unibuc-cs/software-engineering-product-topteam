@@ -1,13 +1,14 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 
 namespace backend_MT.Service.NotificareService
 {
     public interface INotificareService
     {
-        Task<IEnumerable<Notificare>> GetAllNotificationsAsync();
+        Task<IEnumerable<NotificareDTO>> GetAllNotificationsAsync();
         Task<Notificare> GetNotificationByIdAsync(int id);
-        Task AddNotificationAsync(Notificare notificare);
-        Task UpdateNotificationAsync(Notificare notificare);
+        Task<bool> AddNotificationAsync(NotificareDTO notificare);
+        Task UpdateNotificationAsync(int id, NotificareDTO notificare);
         Task DeleteNotificationAsync(int id);
     }
 }

@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.GrupaRepository
             return await _context.grupa.FindAsync(id);
         }
 
-        public async Task AddGroupAsync(Grupa grupa)
+        public async Task<bool> AddGroupAsync(Grupa grupa)
         {
             await _context.grupa.AddAsync(grupa);
-            await _context.SaveChangesAsync();
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
         public async Task UpdateGroupAsync(Grupa grupa)

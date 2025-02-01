@@ -1,4 +1,5 @@
 using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.DisponibilitateService;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
@@ -19,7 +20,7 @@ namespace backend_MT.Controllers
 
         // GET: api/disponibilitate
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Disponibilitate>>> GetAllDisponibilitati()
+        public async Task<ActionResult<IEnumerable<DisponibilitateDTO>>> GetAllDisponibilitati()
         {
             var disponibilitati = await _disponibilitateService.GetAllDisponibilitatiAsync();
             return Ok(disponibilitati);
@@ -39,22 +40,19 @@ namespace backend_MT.Controllers
 
         // POST: api/disponibilitate
         [HttpPost]
-        public async Task<ActionResult<Disponibilitate>> AddDisponibilitate(Disponibilitate disponibilitate)
+        public async Task<IActionResult> AddDisponibilitate(DisponibilitateDTO disponibilitate)
         {
-            await _disponibilitateService.AddDisponibilitateAsync(disponibilitate);
-            return CreatedAtAction(nameof(GetDisponibilitateById), new { id = disponibilitate.disponibilitateId }, disponibilitate);
+            if (await _disponibilitateService.AddDisponibilitateAsync(disponibilitate))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/disponibilitate/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateDisponibilitate(int id, Disponibilitate disponibilitate)
+        public async Task<IActionResult> UpdateDisponibilitate(int id, DisponibilitateDTO disponibilitate)
         {
-            if (id != disponibilitate.disponibilitateId)
-            {
-                return BadRequest();
-            }
 
-            await _disponibilitateService.UpdateDisponibilitateAsync(disponibilitate);
+            await _disponibilitateService.UpdateDisponibilitateAsync(id, disponibilitate);
             return NoContent();
         }
 

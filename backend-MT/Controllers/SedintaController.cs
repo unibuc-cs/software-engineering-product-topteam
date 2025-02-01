@@ -1,4 +1,5 @@
 ﻿using backend_MT.Models;
+using backend_MT.Models.DTOs;
 using backend_MT.Service.SedintaService;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,7 +18,7 @@ namespace backend_MT.Controllers
 
         // GET: api/sedinta
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Sedinta>>> GetAllSessions()
+        public async Task<ActionResult<IEnumerable<SedintaDTO>>> GetAllSessions()
         {
             var sedinte = await _sedintaService.GetAllSessionsAsync();
             return Ok(sedinte);
@@ -37,22 +38,18 @@ namespace backend_MT.Controllers
 
         // POST: api/sedinta
         [HttpPost]
-        public async Task<ActionResult<Sedinta>> AddSession(Sedinta sedinta)
+        public async Task<ActionResult> AddSession(SedintaDTO sedinta)
         {
-            await _sedintaService.AddSessionAsync(sedinta);
-            return CreatedAtAction(nameof(GetSessionById), new { id = sedinta.sedintaId }, sedinta); // Asumând că Sedinta are o proprietate Id
+            if (await _sedintaService.AddSessionAsync(sedinta))
+                return Ok();
+            return BadRequest();
         }
 
         // PUT: api/sedinta/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateSession(int id, Sedinta sedinta)
+        public async Task<IActionResult> UpdateSession(int id, SedintaDTO sedinta)
         {
-            if (id != sedinta.sedintaId) // Verifică dacă ID-urile se potrivesc
-            {
-                return BadRequest();
-            }
-
-            await _sedintaService.UpdateSessionAsync(sedinta);
+            await _sedintaService.UpdateSessionAsync(id, sedinta);
             return NoContent();
         }
 

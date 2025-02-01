@@ -8,7 +8,7 @@ namespace backend_MT.Repositories.RaspunsTemaRepository
     {
         Task<IEnumerable<RaspunsTema>> GetAllResponsesAsync();
         Task<RaspunsTema> GetResponseByIdAsync(int id);
-        Task AddResponseAsync(RaspunsTema raspunsTema);
+        Task<bool> AddResponseAsync(RaspunsTema raspunsTema);
         Task UpdateResponseAsync(RaspunsTema raspunsTema);
         Task DeleteResponseAsync(int id);
     }

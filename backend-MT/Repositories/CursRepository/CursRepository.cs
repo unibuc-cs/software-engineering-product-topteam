@@ -25,10 +25,10 @@ namespace backend_MT.Repositories.CursRepository
             return await _context.curs.FindAsync(id);
         }
 
-        public async Task AddCourseAsync(Curs curs)
+        public async Task<bool> AddCourseAsync(Curs curs)
         {
             await _context.curs.AddAsync(curs);
-            await _context.SaveChangesAsync();
+            return (await _context.SaveChangesAsync()) > 0;
         }
 
         public async Task UpdateCourseAsync(Curs curs)
