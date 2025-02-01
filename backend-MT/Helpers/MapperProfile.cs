@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using backend_MT.Data;
 using backend_MT.Models;
 using backend_MT.Models.DTOs;
 using System.Net;
@@ -7,8 +8,12 @@ namespace backend_MT.Helpers
 {
 	public class MapperProfile : Profile
 	{
-		public MapperProfile()
+		private readonly ApplicationDbContext _context;
+
+		public MapperProfile(ApplicationDbContext context)
 		{
+			_context = context;
+
 			CreateMap <Curs, CursDTO>();
 			CreateMap <CursDTO, Curs>();
 
@@ -36,7 +41,7 @@ namespace backend_MT.Helpers
 			CreateMap <RaspunsTema, RaspunsTemaDTO> ();
 			CreateMap <RaspunsTemaDTO, RaspunsTema>();
 
-			CreateMap <Sedinta, SedintaDTO > ();
+			CreateMap<Sedinta, SedintaDTO > ();
 			CreateMap <SedintaDTO, Sedinta>();
 
 			CreateMap <Support, SupportDTO> ();

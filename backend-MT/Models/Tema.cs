@@ -11,6 +11,6 @@ namespace backend_MT.Models
         public string fisier { get; set; }
         public int userId { get; set; }
         public virtual User user { get; set; }
-        public ICollection<RaspunsTema>? raspunsuriTema {  get; set; }
+        public virtual ICollection<RaspunsTema>? raspunsuriTema {  get; set; }
     }
 }
