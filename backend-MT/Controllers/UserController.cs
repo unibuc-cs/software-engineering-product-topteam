@@ -74,5 +74,11 @@ namespace backend_MT.Controllers
                 return BadRequest(e.Message);
             }
         }
+
+        [HttpGet("currentUser")]
+        public async Task<IActionResult> currentUser()
+        {
+            return Ok(await _userService.GetCurrentUserInfoAsync());
+        }
     }
 }
