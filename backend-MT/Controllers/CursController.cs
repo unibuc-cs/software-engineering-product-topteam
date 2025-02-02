@@ -38,11 +38,9 @@ namespace backend_MT.Controllers
 
         // POST: api/curs
         [HttpPost]
-        public async Task<IActionResult> AddCourse(CursDTO curs)
+        public async Task<ActionResult<Curs>> AddCourse(CursDTO curs)
         {
-            if (await _cursService.AddCourseAsync(curs))
-                return Ok();
-            return BadRequest();
+            return Ok(await _cursService.AddCourseAsync(curs));
         }
 
         // PUT: api/curs/{id}

@@ -5,9 +5,9 @@ namespace backend_MT.Service.GrupaService
 {
     public interface IGrupaService
     {
-        Task<IEnumerable<GrupaDTO>> GetAllGroupsAsync();
+        Task<IEnumerable<Grupa>> GetAllGroupsAsync();
         Task<Grupa> GetGroupByIdAsync(int id);
-        Task<bool> AddGroupAsync(GrupaDTO grupa);
+        Task<Grupa> AddGroupAsync(GrupaDTO grupa);
         Task UpdateGroupAsync(int id, GrupaDTO grupa);
         Task DeleteGroupAsync(int id);
     }
