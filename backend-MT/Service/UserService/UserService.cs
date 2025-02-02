@@ -9,6 +9,9 @@ using System.Text;
 using static backend_MT.Models.Roles.Role;
 using backend_MT.Exceptions;
 using AutoMapper;
+using backend_MT.Data;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace backend_MT.Services
 {
@@ -18,13 +21,15 @@ namespace backend_MT.Services
 		private readonly SignInManager<User> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
 
-		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IMapper mapper, ApplicationDbContext context)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _context = context;
 		}
 
 		public async Task<IdentityResult> RegisterAsync(RegisterDTO newUser)
@@ -52,7 +57,7 @@ namespace backend_MT.Services
             return result;
         }
 
-        public async Task<string> LoginAsync(LoginDTO login)
+        public async Task<LoggedInDTO> LoginAsync(LoginDTO login)
         {
             var user = await _userManager.FindByNameAsync(login.username);
             if (user == null)
@@ -68,7 +73,13 @@ namespace backend_MT.Services
             if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                return GenerateToken(user, roles);
+				LoggedInDTO loggedIn = new LoggedInDTO
+				{
+					Token = GenerateToken(user, roles),
+					Message = $"Authenticated as {login.username}",
+					Id = user.Id
+				};
+				return loggedIn;
             }
             else if (result.IsLockedOut)
             {
@@ -122,6 +133,57 @@ namespace backend_MT.Services
 			return _mapper.Map<UserDTO>(user);
 		}
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+			var user = await _userManager.FindByNameAsync(username);
 
+            return user;
+		}
+
+
+		public async Task<User> GetUserById(int id)
+		{
+            var user = await _context.user.FindAsync(id);
+
+			return user;
+		}
+
+		public async Task<ICollection<Grupa>> GetAddedGroups(int userId)
+		{
+			var groups = await (from pg in _context.participareGrupa
+								join g in _context.grupa on pg.grupaId equals g.grupaId
+								where pg.userId == userId
+								select g).ToListAsync();
+
+			return groups;
+		}
+
+		public async Task<bool> AddGroups(int userId, ICollection<int> groupIds)
+		{
+		    
+			// Get existing group associations to avoid duplicates
+			var existingGroupIds = _context.participareGrupa
+				.Where(pg => pg.userId == userId)
+				.Select(pg => pg.grupaId)
+				.ToList();
+
+			// Filter out the group IDs that are already linked
+			var newGroupIds = groupIds.Except(existingGroupIds).ToList();
+
+			// Create new ParticipareGrupa entries
+			foreach (var groupId in newGroupIds)
+			{
+				_context.participareGrupa.Add(new ParticipareGrupa
+				{
+					userId = userId,
+					grupaId = groupId
+				});
+			}
+
+			// Save changes to the database
+			await _context.SaveChangesAsync();
+			return true;
+		}
 	}
 }
+

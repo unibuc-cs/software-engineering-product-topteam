@@ -18,10 +18,9 @@ namespace backend_MT.Service.GrupaService
 			_mapper = mapper;
 		}
 
-		public async Task<IEnumerable<GrupaDTO>> GetAllGroupsAsync()
+		public async Task<IEnumerable<Grupa>> GetAllGroupsAsync()
 		{
-			var groups = await _grupaRepository.GetAllGroupsAsync();
-			return _mapper.Map<IEnumerable<GrupaDTO>>(groups);
+			return await _grupaRepository.GetAllGroupsAsync();
 		}
 
 		public async Task<Grupa> GetGroupByIdAsync(int id)
@@ -29,10 +28,12 @@ namespace backend_MT.Service.GrupaService
 			return await _grupaRepository.GetGroupByIdAsync(id);
 		}
 
-		public async Task<bool> AddGroupAsync(GrupaDTO grupaDto)
+		public async Task<Grupa> AddGroupAsync(GrupaDTO grupaDto)
 		{
 			var grupa = _mapper.Map<Grupa>(grupaDto);
-			return await _grupaRepository.AddGroupAsync(grupa);
+			if (await _grupaRepository.AddGroupAsync(grupa))
+				return grupa;
+			return null;
 		}
 
 		public async Task UpdateGroupAsync(int id, GrupaDTO grupaDto)

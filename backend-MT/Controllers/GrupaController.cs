@@ -1,4 +1,5 @@
-﻿using backend_MT.Models;
+﻿using System.Text.RegularExpressions;
+using backend_MT.Models;
 using backend_MT.Models.DTOs;
 using backend_MT.Service.GrupaService;
 using Microsoft.AspNetCore.Mvc;
@@ -18,7 +19,7 @@ namespace backend_MT.Controllers
 
         // GET: api/grupa
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<GrupaDTO>>> GetAllGroups()
+        public async Task<ActionResult<IEnumerable<Grupa>>> GetAllGroups()
         {
             var grupe = await _grupaService.GetAllGroupsAsync();
             return Ok(grupe);
@@ -38,11 +39,9 @@ namespace backend_MT.Controllers
 
         // POST: api/grupa
         [HttpPost]
-        public async Task<ActionResult> AddGroup(GrupaDTO grupa)
+        public async Task<ActionResult<Grupa>> AddGroup(GrupaDTO grupa)
         {
-            if (await _grupaService.AddGroupAsync(grupa))
-                return Ok();
-            return BadRequest();
+            return Ok(await _grupaService.AddGroupAsync(grupa));
         }
 
         // PUT: api/grupa/{id}

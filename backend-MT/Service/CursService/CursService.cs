@@ -16,9 +16,9 @@ namespace backend_MT.Service.CursService
             _mapper = mapper;
         }
 
-        public async Task<IEnumerable<CursDTO>> GetAllCoursesAsync()
+        public async Task<IEnumerable<Curs>> GetAllCoursesAsync()
         {
-            return _mapper.Map<IEnumerable<CursDTO>>(await _cursRepository.GetAllCoursesAsync());
+            return await _cursRepository.GetAllCoursesAsync();
         }
 
         public async Task<Curs> GetCourseByIdAsync(int id)
@@ -26,9 +26,14 @@ namespace backend_MT.Service.CursService
             return await _cursRepository.GetCourseByIdAsync(id);
         }
 
-        public async Task<bool> AddCourseAsync(CursDTO curs)
+        public async Task<Curs> AddCourseAsync(CursDTO curs)
         {
-            return (await _cursRepository.AddCourseAsync(_mapper.Map<Curs>(curs)));
+            var cursToAdd = _mapper.Map<Curs>(curs);
+            if (await _cursRepository.AddCourseAsync(cursToAdd))
+            {
+                return cursToAdd;
+            }
+            return null;
         }
 
         public async Task UpdateCourseAsync(int id, CursDTO curs)
