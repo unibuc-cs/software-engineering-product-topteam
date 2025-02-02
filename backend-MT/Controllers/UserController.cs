@@ -1,4 +1,5 @@
 ﻿using backend_MT.Exceptions;
+using backend_MT.Models;
 using backend_MT.Models.DTOs.UserDTOs;
 using backend_MT.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
@@ -87,6 +88,19 @@ namespace backend_MT.Controllers
             return Ok(await _userService.GetCurrentUserInfoAsync());
         }
 
-        //[HttpGet("")]
-    }
+        [HttpGet("getUserByUsername")]
+        public async Task<ActionResult<User>> getUserByUsername(string username)
+        {
+            return Ok(await _userService.GetUserByUsername(username));
+        }
+
+
+		[HttpGet("getUserById")]
+		public async Task<ActionResult<User>> getUserById(int id)
+		{
+			return Ok(await _userService.GetUserById(id));
+		}
+
+		//[HttpGet("")]
+	}
 }

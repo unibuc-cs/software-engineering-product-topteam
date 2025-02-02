@@ -9,6 +9,7 @@ using System.Text;
 using static backend_MT.Models.Roles.Role;
 using backend_MT.Exceptions;
 using AutoMapper;
+using backend_MT.Data;
 
 namespace backend_MT.Services
 {
@@ -18,13 +19,15 @@ namespace backend_MT.Services
 		private readonly SignInManager<User> _signInManager;
 		private readonly IHttpContextAccessor _httpContextAccessor;
 		private readonly IMapper _mapper;
+        private readonly ApplicationDbContext _context;
 
-		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IMapper mapper)
+		public UserService(UserManager<User> userManager, SignInManager<User> signInManager, IHttpContextAccessor httpContextAccessor, IMapper mapper, ApplicationDbContext context)
 		{
 			_userManager = userManager;
 			_signInManager = signInManager;
 			_httpContextAccessor = httpContextAccessor;
             _mapper = mapper;
+            _context = context;
 		}
 
 		public async Task<IdentityResult> RegisterAsync(RegisterDTO newUser)
@@ -128,6 +131,20 @@ namespace backend_MT.Services
 			return _mapper.Map<UserDTO>(user);
 		}
 
+        public async Task<User> GetUserByUsername(string username)
+        {
+			var user = await _userManager.FindByNameAsync(username);
+
+            return user;
+		}
+
+
+		public async Task<User> GetUserById(int id)
+		{
+            var user = await _context.user.FindAsync(id);
+
+			return user;
+		}
 
 	}
 }
