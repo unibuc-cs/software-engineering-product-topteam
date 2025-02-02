@@ -103,10 +103,18 @@ namespace backend_MT.Controllers
 
 
 		[HttpGet("getAddedGroups")]
-		public async Task<ActionResult<ICollection<User>>> GetAddedGroups(int id)
+		public async Task <ActionResult<ICollection<User>>> GetAddedGroups(int id)
 		{
 			return Ok(await _userService.GetAddedGroups(id));
 		}
-		//[HttpGet("")]
+
+
+		[HttpPut("addGroups")]
+		public async Task <ActionResult> AddGroups(int userId, ICollection<int> groupIds)
+        {
+            if (await _userService.AddGroups(userId, groupIds))
+                return Ok();
+            return BadRequest();
+        }
 	}
 }

@@ -158,5 +158,32 @@ namespace backend_MT.Services
 			return groups;
 		}
 
+		public async Task<bool> AddGroups(int userId, ICollection<int> groupIds)
+		{
+		    
+			// Get existing group associations to avoid duplicates
+			var existingGroupIds = _context.participareGrupa
+				.Where(pg => pg.userId == userId)
+				.Select(pg => pg.grupaId)
+				.ToList();
+
+			// Filter out the group IDs that are already linked
+			var newGroupIds = groupIds.Except(existingGroupIds).ToList();
+
+			// Create new ParticipareGrupa entries
+			foreach (var groupId in newGroupIds)
+			{
+				_context.participareGrupa.Add(new ParticipareGrupa
+				{
+					userId = userId,
+					grupaId = groupId
+				});
+			}
+
+			// Save changes to the database
+			await _context.SaveChangesAsync();
+			return true;
+		}
 	}
 }
+
