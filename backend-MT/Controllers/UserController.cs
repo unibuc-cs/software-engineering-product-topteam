@@ -101,6 +101,12 @@ namespace backend_MT.Controllers
 			return Ok(await _userService.GetUserById(id));
 		}
 
+
+		[HttpGet("getAddedGroups")]
+		public async Task<ActionResult<ICollection<User>>> GetAddedGroups(int id)
+		{
+			return Ok(await _userService.GetAddedGroups(id));
+		}
 		//[HttpGet("")]
 	}
 }

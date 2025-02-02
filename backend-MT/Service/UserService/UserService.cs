@@ -10,6 +10,8 @@ using static backend_MT.Models.Roles.Role;
 using backend_MT.Exceptions;
 using AutoMapper;
 using backend_MT.Data;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace backend_MT.Services
 {
@@ -144,6 +146,16 @@ namespace backend_MT.Services
             var user = await _context.user.FindAsync(id);
 
 			return user;
+		}
+
+		public async Task<ICollection<Grupa>> GetAddedGroups(int userId)
+		{
+			var groups = await (from pg in _context.participareGrupa
+								join g in _context.grupa on pg.grupaId equals g.grupaId
+								where pg.userId == userId
+								select g).ToListAsync();
+
+			return groups;
 		}
 
 	}

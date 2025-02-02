@@ -12,6 +12,7 @@ namespace backend_MT.Service.UserService
 		Task<User> GetUserByUsername(string username);
 		Task<User> GetUserById(int id);
 		Task<UserDTO> GetCurrentUserInfoAsync();
-
+		Task<ICollection<Grupa>> GetAddedGroups(int userId);
+		//Task<ICollection<Grupa>> AddGroups(int userId);
 	}
 }
