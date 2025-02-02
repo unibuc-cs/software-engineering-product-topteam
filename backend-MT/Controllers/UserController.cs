@@ -3,6 +3,7 @@ using backend_MT.Models.DTOs.UserDTOs;
 using backend_MT.Service.UserService;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Threading.Tasks;
 
 namespace backend_MT.Controllers
@@ -40,21 +41,26 @@ namespace backend_MT.Controllers
 
         [HttpPost("login")]
         [AllowAnonymous]
-        public async Task<IActionResult> Login([FromBody] LoginDTO user)
+        public async Task<ActionResult> Login([FromBody] LoginDTO user)
         {
             try
             {
-                var token = await _userService.LoginAsync(user);
-                if (!string.IsNullOrEmpty(token))
+                var loggedIn = await _userService.LoginAsync(user);
+                Console.WriteLine(loggedIn.Token);
+                if (!string.IsNullOrEmpty(loggedIn.Token))
                 {
-                    Response.Cookies.Append("jwt", token, new CookieOptions
+                    Response.Cookies.Append("jwt", loggedIn.Token, new CookieOptions
                     {
                         HttpOnly = true,
                         Secure = true,
                         SameSite = SameSiteMode.None,
                         Expires = DateTimeOffset.UtcNow.AddMinutes(30)
                     });
-                    return Ok(new { Message = $"Authenticated as {user.username}", Token = token });
+					Console.WriteLine(loggedIn.Message); // I get here
+					Console.WriteLine($"Returning token: {loggedIn.Token}");
+					Console.WriteLine($"Response object: {JsonConvert.SerializeObject(loggedIn)}");
+
+					return Ok( new { Id = loggedIn.Id, Message = loggedIn.Message, Token = loggedIn.Token});
                 }
                 else
                 {
@@ -80,5 +86,7 @@ namespace backend_MT.Controllers
         {
             return Ok(await _userService.GetCurrentUserInfoAsync());
         }
+
+        //[HttpGet("")]
     }
 }

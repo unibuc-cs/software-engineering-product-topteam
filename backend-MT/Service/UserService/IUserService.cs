@@ -8,7 +8,7 @@ namespace backend_MT.Service.UserService
 	public interface IUserService
 	{
         Task<IdentityResult> RegisterAsync(RegisterDTO newUser);
-        Task<string> LoginAsync(LoginDTO login);
+        Task<LoggedInDTO> LoginAsync(LoginDTO login);
 		Task<UserDTO> GetCurrentUserInfoAsync();
 
 	}

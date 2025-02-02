@@ -52,7 +52,7 @@ namespace backend_MT.Services
             return result;
         }
 
-        public async Task<string> LoginAsync(LoginDTO login)
+        public async Task<LoggedInDTO> LoginAsync(LoginDTO login)
         {
             var user = await _userManager.FindByNameAsync(login.username);
             if (user == null)
@@ -68,7 +68,13 @@ namespace backend_MT.Services
             if (result.Succeeded)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                return GenerateToken(user, roles);
+				LoggedInDTO loggedIn = new LoggedInDTO
+				{
+					Token = GenerateToken(user, roles),
+					Message = $"Authenticated as {login.username}",
+					Id = user.Id
+				};
+				return loggedIn;
             }
             else if (result.IsLockedOut)
             {
