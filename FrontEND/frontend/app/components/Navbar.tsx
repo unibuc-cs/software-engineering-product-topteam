@@ -10,6 +10,7 @@ import {
   ShoppingCart,
   LogOut,
   Plus,
+  Users,
 } from "lucide-react";
 import type { User as UserType } from "../types/auth";
 import { logout } from "../lib/auth";
@@ -27,6 +28,7 @@ const professorNavItems = [
   { name: "Chat", href: "/professor/chat", icon: MessageSquare },
   { name: "Your Created Courses", href: "/professor/courses", icon: BookOpen },
   { name: "Create a Course", href: "/professor/create-course", icon: Plus },
+  { name: "Create Group", href: "/professor/create-group", icon: Users },
   {
     name: "Assign Homework",
     href: "/professor/assign-homework",
@@ -53,7 +55,7 @@ export function Navbar({ user }: NavbarProps) {
     <nav className="w-64 bg-white shadow-lg">
       <div className="p-4">
         <h1 className="text-2xl font-bold text-gray-800">Course Website</h1>
-        <p className="mt-2 text-sm text-gray-600">Logged in as {user.nivel}</p>
+        <p className="mt-2 text-sm text-gray-600">Welcome, {user.prenume}</p>
       </div>
       <ul className="space-y-2 p-4">
         {navItems.map((item) => (

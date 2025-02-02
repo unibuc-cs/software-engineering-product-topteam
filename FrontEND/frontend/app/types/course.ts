@@ -1,23 +1,17 @@
-export interface ProfessorMeeting {
-  id: string
-  title: string
-  startingDay: string
-  startingHour: string
-  endingHour: string
-  class: string
-}
-
 export interface Course {
-  id: string
-  name: string
-  description: string
-  price: number
-  category: string
-  professorMeetings: number
-  imageUrl: string
-  professorId: string
-  enrolledStudents: number
-  meetings: ProfessorMeeting[]
-  classReference?: string
+  cursId: number;
+  denumire: string;
+  descriere: string;
+  nrSedinte: number;
+  pret: number;
 }
 
+// Keep the ProfessorMeeting interface as it might be useful for future features
+export interface ProfessorMeeting {
+  id: string;
+  title: string;
+  startingDay: string;
+  startingHour: string;
+  endingHour: string;
+  class: string;
+}

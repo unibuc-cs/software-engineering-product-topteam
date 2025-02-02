@@ -1,47 +1,118 @@
-"use client"
+"use client";
 
-import { useParams } from "next/navigation"
-import { courses } from "../../data/courses"
-import { currentUser } from "../../data/user"
-import { MeetingsCalendar } from "../../components/MeetingsCalendar"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { getCourse } from "../../lib/courseApi";
+import { getUserEnrolledGroups } from "../../lib/userApi";
+import type { Course } from "../../types/course";
+import type { Group } from "../../types/group";
 
-export default function CourseDetailsPage() {
-  const { id } = useParams()
-  const course = courses.find((c) => c.id === id)
-  const isEnrolled = currentUser.enrolledCourses.includes(id as string)
+export default function CourseDetailsPage({
+  params,
+}: {
+  params: { id: string };
+}) {
+  const [course, setCourse] = useState<Course | null>(null);
+  const [enrolledGroup, setEnrolledGroup] = useState<Group | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
 
-  if (!course) {
-    return <div>Course not found</div>
-  }
+  useEffect(() => {
+    async function fetchCourseAndEnrollmentStatus() {
+      try {
+        const [fetchedCourse, enrolledGroups] = await Promise.all([
+          getCourse(Number.parseInt(params.id)),
+          getUserEnrolledGroups(),
+        ]);
+        setCourse(fetchedCourse);
+        const matchingGroup = enrolledGroups.find(
+          (group) => group.cursId === fetchedCourse.cursId
+        );
+        setEnrolledGroup(matchingGroup || null);
+        setLoading(false);
+      } catch (err) {
+        setError("Failed to load course details. Please try again later.");
+        setLoading(false);
+      }
+    }
+
+    fetchCourseAndEnrollmentStatus();
+  }, [params.id]);
+
+  const handleEnroll = () => {
+    router.push(`/courses/${params.id}/enroll`);
+  };
+
+  if (loading) return <div>Loading course details...</div>;
+  if (error) return <div className="text-red-500">{error}</div>;
+  if (!course) return <div>Course not found</div>;
 
   return (
     <div className="max-w-4xl mx-auto">
-      <h1 className="text-3xl font-bold mb-4">{course.name}</h1>
-      <div className="bg-white shadow-md rounded-lg p-6 mb-6">
-        <p className="text-gray-600 mb-4">{course.description}</p>
-        <div className="flex justify-between items-center mb-4">
-          <span className="text-blue-600 font-bold text-xl">${course.price.toFixed(2)}</span>
-          <span className="text-gray-500">Category: {course.category}</span>
+      <h1 className="text-3xl font-bold mb-6">{course.denumire}</h1>
+      <div className="bg-white shadow overflow-hidden sm:rounded-lg">
+        <div className="px-4 py-5 sm:px-6">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            Course Details
+          </h3>
         </div>
-        <p className="text-gray-600">Number of meetings with professor: {course.professorMeetings}</p>
-        {isEnrolled ? (
-          <button className="mt-6 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition duration-300">
-            Go to Course
-          </button>
-        ) : (
-          <button className="mt-6 bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">
+        <div className="border-t border-gray-200">
+          <dl>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Description</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {course.descriere}
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">
+                Number of Sessions
+              </dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                {course.nrSedinte}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500">Price</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                ${course.pret.toFixed(2)}
+              </dd>
+            </div>
+            {enrolledGroup && (
+              <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+                <dt className="text-sm font-medium text-gray-500">
+                  Meeting Link
+                </dt>
+                <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                  <a
+                    href={enrolledGroup.linkMeet}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="text-blue-600 hover:text-blue-800"
+                  >
+                    Join Meeting
+                  </a>
+                </dd>
+              </div>
+            )}
+          </dl>
+        </div>
+      </div>
+      <div className="mt-6">
+        {!enrolledGroup ? (
+          <button
+            onClick={handleEnroll}
+            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          >
             Enroll in Course
           </button>
+        ) : (
+          <p className="text-green-600 font-semibold">
+            You are enrolled in this course
+          </p>
         )}
       </div>
-
-      {isEnrolled && course.meetings.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-2xl font-bold mb-4">Professor Meetings</h2>
-          <MeetingsCalendar meetings={course.meetings} />
-        </div>
-      )}
     </div>
-  )
+  );
 }
-
