@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import type { LoginCredentials } from "../types/auth";
-import { login } from "../lib/auth";
+import { login, getUserById } from "../lib/auth";
 import { Eye, EyeOff } from "lucide-react";
 
 export function LoginForm() {
@@ -24,22 +24,29 @@ export function LoginForm() {
       const result = await login(data);
       console.log("Login result:", result);
       if (result) {
-        // Store the token and user information in localStorage
+        // Store the token and user ID in localStorage
         localStorage.setItem("authToken", result.token);
-        localStorage.setItem("user", JSON.stringify(result.user));
+        localStorage.setItem("userId", result.userId.toString());
         setMessage(result.message);
-        console.log(
-          "User role:",
-          result.user.profesorVerificat ? "Professor" : "Student"
-        );
-        // Redirect to the appropriate page based on the user's role after a short delay
-        setTimeout(() => {
-          const redirectPath = result.user.profesorVerificat
-            ? "/professor/user"
-            : "/shop";
-          console.log("Redirecting to:", redirectPath);
-          router.push(redirectPath);
-        }, 1500);
+
+        try {
+          // Fetch user data
+          const userData = await getUserById(result.userId, result.token);
+          if (userData) {
+            localStorage.setItem("userNivel", userData.nivel);
+            // Redirect to the appropriate page based on the user's role after a short delay
+            setTimeout(() => {
+              router.push(
+                userData.nivel === "student" ? "/shop" : "/professor/user"
+              );
+            }, 1500);
+          } else {
+            setError("Failed to fetch user data");
+          }
+        } catch (userError) {
+          console.error("Error fetching user data:", userError);
+          setError("Failed to fetch user data. Please try logging in again.");
+        }
       } else {
         setError("Invalid username or password");
       }

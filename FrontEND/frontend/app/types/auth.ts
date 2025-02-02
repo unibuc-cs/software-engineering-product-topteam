@@ -1,14 +1,12 @@
 export interface User {
-  id?: string;
+  id: number;
   username: string;
-  profesorVerificat: boolean;
+  nivel: string;
   nume: string;
   prenume: string;
-  nivel: string;
   pozaProfil: string;
   email: string;
   nrTelefon: string;
-  // Add other user properties as needed
 }
 
 export interface LoginCredentials {
@@ -26,7 +24,6 @@ export interface RegisterData {
   pozaProfil: string;
   email: string;
   nrTelefon: string;
-  profesorVerificat: boolean;
 }
 
 export interface AuthState {

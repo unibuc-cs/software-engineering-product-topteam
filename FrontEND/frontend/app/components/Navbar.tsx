@@ -41,7 +41,8 @@ interface NavbarProps {
 export function Navbar({ user }: NavbarProps) {
   const pathname = usePathname();
   const router = useRouter();
-  const navItems = user.profesorVerificat ? professorNavItems : studentNavItems;
+  const navItems =
+    user.nivel === "student" ? studentNavItems : professorNavItems;
 
   const handleLogout = () => {
     logout();
@@ -52,7 +53,7 @@ export function Navbar({ user }: NavbarProps) {
     <nav className="w-64 bg-white shadow-lg">
       <div className="p-4">
         <h1 className="text-2xl font-bold text-gray-800">Course Website</h1>
-        <p className="mt-2 text-sm text-gray-600">Welcome, {user.username}</p>
+        <p className="mt-2 text-sm text-gray-600">Logged in as {user.nivel}</p>
       </div>
       <ul className="space-y-2 p-4">
         {navItems.map((item) => (

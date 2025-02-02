@@ -21,7 +21,7 @@ export function RegisterForm() {
     try {
       const result = await registerUser(data);
       if (result) {
-        // Redirect to login page after successful registration
+        // Registration successful, redirect to login page
         router.push("/login");
       } else {
         setError("Registration failed. Please try again.");
@@ -158,12 +158,15 @@ export function RegisterForm() {
         >
           Level
         </label>
-        <input
-          type="text"
+        <select
           id="nivel"
           {...register("nivel", { required: "Level is required" })}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
-        />
+        >
+          <option value="">Select a level</option>
+          <option value="student">Student</option>
+          <option value="profesor">Professor</option>
+        </select>
         {errors.nivel && (
           <p className="mt-1 text-sm text-red-600">{errors.nivel.message}</p>
         )}
@@ -181,17 +184,6 @@ export function RegisterForm() {
           {...register("pozaProfil")}
           className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-300 focus:ring focus:ring-indigo-200 focus:ring-opacity-50"
         />
-      </div>
-      <div>
-        <label htmlFor="profesorVerificat" className="flex items-center">
-          <input
-            type="checkbox"
-            id="profesorVerificat"
-            {...register("profesorVerificat")}
-            className="rounded border-gray-300 text-indigo-600 shadow-sm focus:border-indigo-300 focus:ring focus:ring-offset-0 focus:ring-indigo-200 focus:ring-opacity-50"
-          />
-          <span className="ml-2 text-sm text-gray-700">Verified Professor</span>
-        </label>
       </div>
       {error && <p className="text-sm text-red-600">{error}</p>}
       <button

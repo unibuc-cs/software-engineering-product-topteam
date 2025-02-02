@@ -33,35 +33,31 @@ export default function RootLayout({
 
   useEffect(() => {
     const token = localStorage.getItem("authToken");
-    const userString = localStorage.getItem("user");
-
-    console.log("Current pathname:", pathname);
+    const userId = localStorage.getItem("userId");
+    const userNivel = localStorage.getItem("userNivel");
 
     if (publicRoutes.includes(pathname)) {
-      console.log("Accessing public route");
+      // Allow access to public routes without authentication
       return;
     }
 
-    if (token && userString) {
-      const user = JSON.parse(userString) as User;
-      console.log("User data from localStorage:", user);
-      setAuthState({ user, token });
+    if (token && userId && userNivel) {
+      setAuthState({
+        user: { id: Number.parseInt(userId), nivel: userNivel } as User,
+        token,
+      });
 
       // Check if the user is trying to access a route they shouldn't
       if (
-        (!user.profesorVerificat &&
+        (userNivel === "student" &&
           professorRoutes.some((route) => pathname.startsWith(route))) ||
-        (user.profesorVerificat &&
+        (userNivel === "profesor" &&
           studentRoutes.some((route) => pathname.startsWith(route)))
       ) {
-        const redirectPath = user.profesorVerificat
-          ? "/professor/user"
-          : "/shop";
-        console.log("Redirecting to appropriate route:", redirectPath);
-        router.push(redirectPath);
+        router.push(userNivel === "student" ? "/shop" : "/professor/user");
       }
     } else {
-      console.log("No token or user data, redirecting to login");
+      // No token or user info, redirect to login for protected routes
       router.push("/login");
     }
   }, [pathname, router]);

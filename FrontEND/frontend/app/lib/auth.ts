@@ -4,10 +4,8 @@ const API_BASE_URL = "http://localhost:5081/api";
 
 export async function login(
   credentials: LoginCredentials
-): Promise<{ user: User; token: string; message: string } | null> {
+): Promise<{ token: string; message: string; userId: number } | null> {
   try {
-    console.log("Sending login request with credentials:", credentials);
-
     const response = await fetch(`${API_BASE_URL}/User/login`, {
       method: "POST",
       headers: {
@@ -21,29 +19,12 @@ export async function login(
     }
 
     const data = await response.json();
-    console.log("Received login response:", data);
-
-    // Ensure profesorVerificat is a boolean
-    const profesorVerificat = data.profesorVerificat === true;
-
-    const user: User = {
-      username: credentials.username,
-      profesorVerificat: profesorVerificat,
-      // Add other user properties as needed
-      nume: data.nume || "",
-      prenume: data.prenume || "",
-      nivel: data.nivel || "",
-      pozaProfil: data.pozaProfil || "",
-      email: data.email || "",
-      nrTelefon: data.nrTelefon || "",
-    };
-
-    console.log("Processed user data:", user);
+    console.log("Login response:", data);
 
     return {
-      user,
       token: data.token,
       message: data.message,
+      userId: data.id,
     };
   } catch (error) {
     console.error("Login error:", error);
@@ -51,17 +32,63 @@ export async function login(
   }
 }
 
-export async function register(data: RegisterData): Promise<User | null> {
-  // ... (keep the existing register function)
+export async function getUserById(
+  userId: number,
+  token: string
+): Promise<User | null> {
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/User/getUserById?id=${userId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Error response:", errorData);
+      throw new Error(
+        `Failed to fetch user data: ${response.status} ${response.statusText}`
+      );
+    }
+
+    const userData = await response.json();
+    console.log("User data:", userData);
+    return userData;
+  } catch (error) {
+    console.error("Get user error:", error);
+    throw error; // Re-throw the error to be handled by the caller
+  }
 }
 
-export function getUserFromToken(token: string): User | null {
-  // This function might need to be updated based on how your backend handles token validation
-  // For now, we'll return null
-  return null;
+export async function register(data: RegisterData): Promise<User | null> {
+  try {
+    const response = await fetch(`${API_BASE_URL}/User/register`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+      throw new Error("Registration failed");
+    }
+
+    const user = await response.json();
+    return user;
+  } catch (error) {
+    console.error("Registration error:", error);
+    return null;
+  }
 }
 
 export function logout() {
   localStorage.removeItem("authToken");
-  localStorage.removeItem("userRole");
+  localStorage.removeItem("userId");
+  localStorage.removeItem("userNivel");
 }
