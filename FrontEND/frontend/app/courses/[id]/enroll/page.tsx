@@ -13,15 +13,24 @@ export default function EnrollPage({ params }: { params: { id: string } }) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+  const API_BASE_URL = "http://localhost:5081/api";
 
   useEffect(() => {
     async function fetchData() {
       try {
         const fetchedCourse = await getCourse(Number.parseInt(params.id));
         setCourse(fetchedCourse);
-        const storedGroups = localStorage.getItem("courseGroups");
-        if (storedGroups) {
-          setGroups(JSON.parse(storedGroups));
+        const response = await fetch(`${API_BASE_URL}/Grupa`);
+        if (!response.ok) {
+          throw new Error("Failed to fetch groups");
+        }
+        const allGroups: Group[] = await response.json();
+        const courseGroups = allGroups.filter(
+          (group) => group.cursId === fetchedCourse.cursId
+        );
+        setGroups(courseGroups);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("courseGroups", JSON.stringify(courseGroups));
         }
         setLoading(false);
       } catch (err) {
@@ -44,6 +53,17 @@ export default function EnrollPage({ params }: { params: { id: string } }) {
 
   const handleContinue = () => {
     if (selectedGroupId !== null) {
+      const selectedGroup = groups.find(
+        (group) => group.id === selectedGroupId
+      );
+      if (selectedGroup && typeof window !== "undefined") {
+        try {
+          localStorage.setItem("selectedGroup", JSON.stringify(selectedGroup));
+          console.log("Group stored in localStorage:", selectedGroup);
+        } catch (err) {
+          console.error("Failed to store group in localStorage:", err);
+        }
+      }
       router.push(`/courses/${params.id}/enroll/payment`);
     }
   };
